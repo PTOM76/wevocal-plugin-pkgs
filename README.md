@@ -1,40 +1,33 @@
 # WeVocal Plugin Packages
+プラグインのメタデータとインストール URL を公開するカタログ。プラグインのバイナリファイルとソースコードは各作者がホストし、このリポジトリにはカタログ情報のみを保存する。
 
-A public catalog of plugin metadata and installation URLs. Plugin binaries and
-plugin source code are hosted by their authors; this repository stores only
-catalog records.
+## カタログ
+- [`data/index.json`](./data/index.json) は WeVocal Studio が利用するバージョン管理されたカタログ。
+- [`data/plugins/`](./data/plugins/) にはプラグインごとのメタデータファイルを格納する。
+- 初期登録されている WebAudio Modules（WAM）のエントリーは、公式コミュニティカタログから取り込んだもの。元のメタデータとホストされているモジュールの URL をそのまま保持し、プラグインファイル自体はコピーしない。
 
-## Catalog
+静的ファイルは GitHub Pages で公開し、ブラウザーから閲覧できるウェブサイトとして提供する。
 
-- [`data/index.json`](./data/index.json) is the versioned catalog consumed by
-  WeVocal Studio.
-- [`data/plugins/`](./data/plugins/) contains one metadata document per plugin.
-- The initial WebAudio Modules (WAM) entries are imported from the official
-  community catalog. Their original metadata and hosted module URLs are kept;
-  plugin files are not copied here.
+## エントリーの追加
+Actions タブから Register plugin ワークフローを実行する。
 
-The static directory is published as a browseable website using GitHub Pages.
+- `sync_wam`：公式 WAM コミュニティリストからメタデータを取り込み、または更新する。
+- `add`：WAM モジュールの URL、WeVocal マニフェストの URL、または VST DLL の URL を登録する。
 
-## Adding entries
+ワークフローはレビュー用のプルリクエストを作成し、登録情報を直接 `main` ブランチに書き込むことはない。
 
-Run the **Register plugin** workflow from the Actions tab:
+エントリーを追加しても、プラグインファイルのダウンロード、ミラーリング、実行は行わない。
 
-- `sync_wam` imports or refreshes metadata from the official WAM community list.
-- `add` registers a WAM module URL, a WeVocal manifest URL, or a VST DLL URL.
+エントリーの `type` には `wam`、`manifest`、`vst` のいずれかを指定する。
 
-The workflow creates a pull request for review; it never writes registrations
-directly to `main`. Adding an entry does not download, mirror, or execute its
-plugin files.
+- `wam`：WAM コミュニティサイトでホストされている元のモジュールの URL。
+- `manifest`：提供元がホストしているマニフェストの URL。
+- `vst`：提供元がホストしている VST DLL の URL。
 
-Entries use `type` values `wam`, `manifest`, or `vst`. WAM URLs point to the
-original module hosted by the WAM community site. Manifest and VST URLs point
-to the original provider.
-
-## Local checks
-
+## ローカルでの検証
 ```sh
 node scripts/catalog.mjs sync-wam
 node scripts/catalog.mjs validate
 ```
 
-The repository has no runtime dependencies.
+実行時の依存パッケージは不要。

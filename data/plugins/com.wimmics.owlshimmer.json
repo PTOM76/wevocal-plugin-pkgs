@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.owlshimmer",
+  "sourceId": "com.wimmics.owlshimmer",
+  "name": "OWLShimmer",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A stereo ambient reverberation with a shimmer effect. Authors: Michel Buffa for making it a WAM, Quentin Beauchet for improving the GUI, original faust code by Xavier (https://www.rebeltech.org/patch-library/patch/Owlgazer_Dirty_Reverb/)",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/OwlShimmer/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/OwlShimmer/default.png",
+  "categories": [
+    "Effect",
+    "Reverb"
+  ],
+  "keywords": [
+    "Reverb"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/OwlShimmer/descriptor.json"
+  }
+}

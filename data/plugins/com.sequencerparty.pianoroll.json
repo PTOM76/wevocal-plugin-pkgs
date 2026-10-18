@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.pianoroll",
+  "sourceId": "com.sequencerParty.pianoRoll",
+  "name": "Piano Roll",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Piano Roll.  Supports variable length clips.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/pianoroll/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/pianoroll/screenshot.png",
+  "categories": [
+    "MIDI",
+    "Sequencer"
+  ],
+  "keywords": [
+    "sequencer",
+    "midi"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/pianoroll/descriptor.json"
+  }
+}

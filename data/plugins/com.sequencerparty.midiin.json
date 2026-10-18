@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.midiin",
+  "sourceId": "com.sequencerParty.MIDIIn",
+  "name": "MIDI Input",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "WebMIDI Input.  Requires browser support for WebMIDI.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/midi_input/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/midi_input/screenshot.png",
+  "categories": [
+    "MIDI",
+    "Utility"
+  ],
+  "keywords": [
+    "utility",
+    "midi"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/midi_input/descriptor.json"
+  }
+}

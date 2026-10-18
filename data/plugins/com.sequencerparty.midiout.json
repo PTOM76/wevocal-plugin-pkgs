@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.midiout",
+  "sourceId": "com.sequencerParty.midiOut",
+  "name": "MIDI Output",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "WebMIDI Output.  Requires browser support for WebMIDI.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/midi_output/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/midi_output/screenshot.png",
+  "categories": [
+    "MIDI",
+    "Utility"
+  ],
+  "keywords": [
+    "utility",
+    "midi"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/midi_output/descriptor.json"
+  }
+}

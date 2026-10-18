@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.deathgate",
+  "sourceId": "com.wimmics.deathgate",
+  "name": "DeathGate",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "This plugin is a multiband noise gate, works pretty well with distorded guitars, drums, bass, etc. Authors: Michel Buffa for making it a WAM, Quentin Beauchet for improving the GUI, Oleg Kapitonov for the original FAUST code",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/deathgate/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/deathgate/screenshot.png",
+  "categories": [
+    "Effect",
+    "Utility"
+  ],
+  "keywords": [
+    "noisegate"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/deathgate/descriptor.json"
+  }
+}

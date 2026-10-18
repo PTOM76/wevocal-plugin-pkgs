@@ -1,0 +1,27 @@
+{
+  "id": "com.sequencerparty.modal",
+  "sourceId": "com.sequencerParty.modal",
+  "name": "Spectrum: Modal",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Port of a popular eurorack modal synthesizer.  It is a full-blown synthesis voice based on modal synthesis - an under-appreciated flavour of physical modelling synthesis with a strange and abstract feel.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/modal/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/modal/screenshot.png",
+  "categories": [
+    "Instrument",
+    "Synthesizer"
+  ],
+  "keywords": [
+    "synthesizer",
+    "modal",
+    "instrument"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/modal/descriptor.json"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.drumcomputer",
+  "sourceId": "com.sequencerParty.drumComputer",
+  "name": "DRM-16 DrumComputer",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "16-pad MIDI drum sampler",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/drumsampler/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/drumsampler/screenshot.png",
+  "categories": [
+    "Instrument",
+    "Sampler"
+  ],
+  "keywords": [
+    "drum-machine",
+    "sampler"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/drumsampler/descriptor.json"
+  }
+}

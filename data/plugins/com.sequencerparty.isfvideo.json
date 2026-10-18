@@ -1,0 +1,29 @@
+{
+  "id": "com.sequencerparty.isfvideo",
+  "sourceId": "com.sequencerParty.isfVideo",
+  "name": "ISF Video Shader",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "ISF (Interactive Shader Format) Plugin.  Import or write video generators and effects in the ISF (https://isf.video) format.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_isf/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_isf/screenshot.png",
+  "categories": [
+    "Video",
+    "Effect"
+  ],
+  "keywords": [
+    "video",
+    "effect",
+    "shader",
+    "isf",
+    "2d"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_isf/descriptor.json"
+  }
+}

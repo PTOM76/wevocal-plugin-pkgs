@@ -1,0 +1,29 @@
+{
+  "id": "com.sequencerparty.ob6",
+  "sourceId": "com.sequencerParty.ob6",
+  "name": "DSI OB-6 Editor",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Patch editor and controller for the Dave Smith OB-6 synthesizer",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/ob6_editor/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/ob6_editor/screenshot.png",
+  "categories": [
+    "MIDI",
+    "External Device"
+  ],
+  "keywords": [
+    "midi",
+    "external instrument",
+    "dsi",
+    "oberheim",
+    "ob6"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/ob6_editor/descriptor.json"
+  }
+}

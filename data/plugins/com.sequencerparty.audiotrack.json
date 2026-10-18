@@ -1,0 +1,28 @@
+{
+  "id": "com.sequencerparty.audiotrack",
+  "sourceId": "com.sequencerParty.audioTrack",
+  "name": "Audio Track",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Audio file recorder, player, and looper",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/audio_track/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/audio_track/screenshot.png",
+  "categories": [
+    "Instrument",
+    "Audio Player"
+  ],
+  "keywords": [
+    "audio",
+    "utility",
+    "editor",
+    "looper"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/audio_track/descriptor.json"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.pedalboardwac2022",
+  "sourceId": "com.wimmics.pedalboardwac2022",
+  "name": "Pedalboard WAC2022",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A WAM plugin that acts as a host for assembling other WAM plugins in effect chains. Authors: Quentin Beauchet, Kouyoumdjian Pierre, Michael Marynowicz, Yann Forner.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/PedalBoard-WAC2022/src/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/PedalBoard-WAC2022/src/screenshot.png",
+  "categories": [
+    "Effect",
+    "Pedalboard"
+  ],
+  "keywords": [
+    "pedalboard"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/PedalBoard-WAC2022/src/descriptor.json"
+  }
+}

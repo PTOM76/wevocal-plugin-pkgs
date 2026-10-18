@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.owldirty",
+  "sourceId": "com.wimmics.owldirty",
+  "name": "OwlDirty",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A stereo ambient reverberation with a distortion stage on the reverb tail. Authors: Michel Buffa for making it a WAM, Quentin Beauchet for improving the GUI, original faust code by Xavier (https://www.rebeltech.org/patch-library/patch/Owlgazer_Dirty_Reverb/)",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/OwlDirty/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/OwlDirty/default.png",
+  "categories": [
+    "Effect",
+    "Reverb"
+  ],
+  "keywords": [
+    "Reverb"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/OwlDirty/descriptor.json"
+  }
+}

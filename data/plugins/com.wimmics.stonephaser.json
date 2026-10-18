@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.stonephaser",
+  "sourceId": "com.wimmics.stonephaser",
+  "name": "StonePhaser",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "This is an analog phaser with similarity to the Small Stone. It has a color switch, which makes the phasing stronger when on, and adds some feedback controls. Authors: Michel Buffa for making it a WAM, Q. Beauchet for GUI improvements, original faust Code by jpcima https://github.com/jpcima/stone-phaser",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/stonephaser/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/stonephaser/default.png",
+  "categories": [
+    "Effect",
+    "Modulation"
+  ],
+  "keywords": [
+    "phaser"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/stonephaser/descriptor.json"
+  }
+}

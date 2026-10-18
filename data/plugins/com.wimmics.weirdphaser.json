@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.weirdphaser",
+  "sourceId": "com.wimmics.weirdphaser",
+  "name": "WeirdPhaser",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "Weird Phaser is a stereo phase shifter based on SSB (single side band) modulation. Unlike Stereo Frequency Shifter, Weird Phaser uses a single LFO which has a fixed phase offset for the right hand channel, causing some interesting between the ears spatial effects at its maximum settting. Weird Phaser also has feedback for a more pronounced effect. Authors: Michel Buffa for making it a WAM, Q. Beauchet for GUI improvements, original Faust Code : Oli Larkin",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/WeirdPhaser/index.js",
+  "website": "Original web site with faust code by O.Larkin : https://www.rebeltech.org/patch-library/patch/WeirdPhaser",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/WeirdPhaser/default.png",
+  "categories": [
+    "Effect",
+    "Modulation"
+  ],
+  "keywords": [
+    "phaser"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/WeirdPhaser/descriptor.json"
+  }
+}

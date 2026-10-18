@@ -1,0 +1,27 @@
+{
+  "id": "com.sequencerparty.envmod",
+  "sourceId": "com.sequencerParty.envmod",
+  "name": "Envelope Follower",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Modulate a destination parameter with an audio signal.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/envmod/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/envmod/screenshot.png",
+  "categories": [
+    "Modulation",
+    "Modulator"
+  ],
+  "keywords": [
+    "modulator",
+    "envelope",
+    "follower"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/envmod/descriptor.json"
+  }
+}

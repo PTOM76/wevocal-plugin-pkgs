@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.audioinput",
+  "sourceId": "com.sequencerParty.audioInput",
+  "name": "Audio Input",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Provides audio from external sound card input or microphone.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/audio_input/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/audio_input/screenshot.png",
+  "categories": [
+    "Effect",
+    "Utility"
+  ],
+  "keywords": [
+    "utility",
+    "input"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/audio_input/descriptor.json"
+  }
+}

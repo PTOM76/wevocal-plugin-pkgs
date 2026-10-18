@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.ts9overdrive",
+  "sourceId": "com.wimmics.ts9overdrive",
+  "name": "TS9 Overdrive",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A recreation of the classic TS9 overdrive pedal effect. Authors: Michel Buffa for making it a WAM, Q. Beauchet for GUI improvements, original Faust code by the guitarix team",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/TS9_Overdrive/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/TS9_Overdrive/screenshot.png",
+  "categories": [
+    "Effect",
+    "Distortion"
+  ],
+  "keywords": [
+    "overdrive"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/TS9_Overdrive/descriptor.json"
+  }
+}

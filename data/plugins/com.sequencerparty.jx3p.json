@@ -1,0 +1,29 @@
+{
+  "id": "com.sequencerparty.jx3p",
+  "sourceId": "com.sequencerParty.jx3p",
+  "name": "Roland JX-3p Editor",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Patch editor and controller for the Roland JX-3p with the third-party MIDI Mod installed",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/jx3p_editor/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/jx3p_editor/screenshot.png",
+  "categories": [
+    "MIDI",
+    "External Device"
+  ],
+  "keywords": [
+    "midi",
+    "external instrument",
+    "roland",
+    "jx-3p",
+    "organix"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/jx3p_editor/descriptor.json"
+  }
+}

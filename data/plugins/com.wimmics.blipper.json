@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.blipper",
+  "sourceId": "com.wimmics.blipper",
+  "name": "Blipper",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "Blipper is an Envelope Follower which controls the pitch of a triangle oscillator. It is a rough emulation of some of the features of the BOSS PC-2 Percussion Synthesiser. Arthur Russell used something like this to create interesting percussion parts on his records e.g. <https://www.youtube.com/watch?v=LEZevPziZhY>. It works nicely with drums. Authors: Michel Buffa for making it a WAM, Q. Beauchet for GUI improvements, original Faust Code : Oli Larkin",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/blipper/index.js",
+  "website": "Original web site with faust code by O.Larkin : https://www.rebeltech.org/patch-library/patch/Blipper",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/blipper/default.png",
+  "categories": [
+    "Effect",
+    "Equalizer & Filter"
+  ],
+  "keywords": [
+    "blipper"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/blipper/descriptor.json"
+  }
+}

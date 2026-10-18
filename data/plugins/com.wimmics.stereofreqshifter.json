@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.stereofreqshifter",
+  "sourceId": "com.wimmics.stereofreqshifter",
+  "name": "StereoFreqShifter",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "Stereo Frequency Shifter is a twin frequency shifter with linked control of frequency shift for each channel, that can be slightly offset for lush stereo phasing. Authors: Michel Buffa for making it a WAM, Q. Beauchet for GUI improvements, original Faust Code : Oli Larkin",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/StereoFreqShifter/index.js",
+  "website": "Original web site with faust code by O.Larkin : https://www.rebeltech.org/patch-library/patch/StereoFreqShifter",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/StereoFreqShifter/default.png",
+  "categories": [
+    "Effect",
+    "Pitch"
+  ],
+  "keywords": [
+    "blipper"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/StereoFreqShifter/descriptor.json"
+  }
+}

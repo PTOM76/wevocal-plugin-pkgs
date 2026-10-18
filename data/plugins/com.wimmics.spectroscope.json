@@ -1,0 +1,26 @@
+{
+  "id": "com.wimmics.spectroscope",
+  "sourceId": "com.wimmics.spectroscope",
+  "name": "Spectroscope",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "TypeScript/React Spectroscope WebAudioModule. Author: Shihong Ren.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/SRVisualizers/dist/spectroscope/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/SRVisualizers/dist/spectroscope/screenshot.png",
+  "categories": [
+    "Effect",
+    "Visualization"
+  ],
+  "keywords": [
+    "spectroscope",
+    "visualization"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/SRVisualizers/dist/spectroscope/descriptor.json"
+  }
+}

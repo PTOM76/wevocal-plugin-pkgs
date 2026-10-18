@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.randomizer",
+  "sourceId": "com.sequencerParty.randomizer",
+  "name": "Randomizer",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Randomizer.  Connect to an automation port, click the dice, and all target parameters will be randomized.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/randomizer/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/randomizer/screenshot.png",
+  "categories": [
+    "Modulation",
+    "Modulator"
+  ],
+  "keywords": [
+    "random",
+    "modulator"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/randomizer/descriptor.json"
+  }
+}

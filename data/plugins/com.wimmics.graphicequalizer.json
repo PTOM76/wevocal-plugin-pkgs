@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.graphicequalizer",
+  "sourceId": "com.wimmics.graphicequalizer",
+  "name": "GraphicEqualizer",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A graphic equalizer proposing a bank of filters. Drag control points. Use shift+drag for peaking filters to adjust the curve. Author: Michel Buffa.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/graphicEqualizer/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/graphicEqualizer/screenshot.png",
+  "categories": [
+    "Effect",
+    "Equalizer & Filter"
+  ],
+  "keywords": [
+    "GraphicEqualizer"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/graphicEqualizer/descriptor.json"
+  }
+}

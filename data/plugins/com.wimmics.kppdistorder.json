@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.kppdistorder",
+  "sourceId": "com.wimmics.kppdistorder",
+  "name": "KppDistorder",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "This plugin is a distortion pedal emulator with equalizer. Authors: Michel Buffa for making it a WAM, Quentin Beauchet for improving the GUI, Oleg Kapitonov for the original FAUST code",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/kppdistorder/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/kppdistorder/default.png",
+  "categories": [
+    "Effect",
+    "Distortion"
+  ],
+  "keywords": [
+    "distorstion"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/kppdistorder/descriptor.json"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.stepmod",
+  "sourceId": "com.sequencerParty.stepmod",
+  "name": "Step Sequencer",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Automation step sequencer with variable steps, speed, and slew.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/stepmod/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/stepmod/screenshot.png",
+  "categories": [
+    "Modulation",
+    "Sequencer"
+  ],
+  "keywords": [
+    "sequencer",
+    "modulator"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/stepmod/descriptor.json"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.simpleeq",
+  "sourceId": "com.sequencerParty.simpleEQ",
+  "name": "Simple EQ",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Simple three-band equalizer",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/simpleEQ/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/simpleEQ/screenshot.png",
+  "categories": [
+    "Effect",
+    "Equalizer & Filter"
+  ],
+  "keywords": [
+    "effect",
+    "eq"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/simpleEQ/descriptor.json"
+  }
+}

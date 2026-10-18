@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.kppfuzz",
+  "sourceId": "com.wimmics.kppfuzz",
+  "name": "KppFuzz",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "This plugin is a vintage fuzz pedal emulator. Authors: Michel Buffa for making it a WAM, Quentin Beauchet for improving the GUI, Oleg Kapitonov for the original FAUST code.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/Kpp_fuzz/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/Kpp_fuzz/default.png",
+  "categories": [
+    "Effect",
+    "Distortion"
+  ],
+  "keywords": [
+    "fuzz"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/Kpp_fuzz/descriptor.json"
+  }
+}

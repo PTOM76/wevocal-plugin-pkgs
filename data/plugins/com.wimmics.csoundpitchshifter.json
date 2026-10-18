@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.csoundpitchshifter",
+  "sourceId": "com.wimmics.csoundpitchshifter",
+  "name": "Csound Pitch Shifter",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A pitch shifter written by Steven Yi, csound code compiled to wasm.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/csoundPitchShifter/dist/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/csoundPitchShifter/dist/screenshot.png",
+  "categories": [
+    "Effect",
+    "Pitch"
+  ],
+  "keywords": [
+    "PitchShifter"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/csoundPitchShifter/dist/descriptor.json"
+  }
+}

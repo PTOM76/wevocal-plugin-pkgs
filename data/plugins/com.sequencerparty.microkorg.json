@@ -1,0 +1,28 @@
+{
+  "id": "com.sequencerparty.microkorg",
+  "sourceId": "com.sequencerParty.microkorg",
+  "name": "Microkorg Editor",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Patch editor and controller for the Korg Microkorg",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/microkorg_editor/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/microkorg_editor/screenshot.png",
+  "categories": [
+    "MIDI",
+    "External Device"
+  ],
+  "keywords": [
+    "midi",
+    "external instrument",
+    "korg",
+    "microkorg"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/microkorg_editor/descriptor.json"
+  }
+}

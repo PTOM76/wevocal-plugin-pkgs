@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.butterchurn",
+  "sourceId": "com.sequencerParty.butterChurn",
+  "name": "ButterChurn",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Wrapper for Butterchurn visualizer, a rewrite of the classic WinAMP Milkdrop plugin.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_butterchurn/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_butterchurn/screenshot.png",
+  "categories": [
+    "Video",
+    "Generator"
+  ],
+  "keywords": [
+    "video",
+    "visualizer"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_butterchurn/descriptor.json"
+  }
+}

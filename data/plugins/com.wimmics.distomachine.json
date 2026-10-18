@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.distomachine",
+  "sourceId": "com.wimmics.distomachine",
+  "name": "DistoMachine",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "DistoMachine is a tube guitar amp sim, inspired by the Marshall JCM 800 circuitry. Authors: Michel Buffa and Jerome Lebrun",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/disto_machine/src/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/disto_machine/src/default.png",
+  "categories": [
+    "Effect",
+    "Amp Simulator"
+  ],
+  "keywords": [
+    "guitarSimAmplifier"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/disto_machine/src/descriptor.json"
+  }
+}

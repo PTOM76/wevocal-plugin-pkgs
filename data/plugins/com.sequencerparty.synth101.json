@@ -1,0 +1,25 @@
+{
+  "id": "com.sequencerparty.synth101",
+  "sourceId": "com.sequencerParty.synth101",
+  "name": "Synth-101",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Software clone of a simple monophonic synthesizer classic, the Roland SH-101",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/synth101/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/synth101/screenshot.png",
+  "categories": [
+    "Instrument",
+    "Synthesizer"
+  ],
+  "keywords": [
+    "synth"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/synth101/descriptor.json"
+  }
+}

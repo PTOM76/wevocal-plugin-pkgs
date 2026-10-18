@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.bigmuff",
+  "sourceId": "com.wimmics.bigmuff",
+  "name": "Big Muff",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "A reproduction of the BigMuff original Fuzz pedal. Original code from Guitarix project. WAM by Michel Buffa.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/BigMuff/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/BigMuff/screenshot.png",
+  "categories": [
+    "Effect",
+    "Distortion"
+  ],
+  "keywords": [
+    "fuzz"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/BigMuff/descriptor.json"
+  }
+}

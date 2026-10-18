@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.simpledelay",
+  "sourceId": "com.sequencerParty.simpleDelay",
+  "name": "Simple Delay",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Simple stereo filtered delay",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/delay/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/delay/screenshot.png",
+  "categories": [
+    "Effect",
+    "Delay"
+  ],
+  "keywords": [
+    "effect",
+    "delay"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/delay/descriptor.json"
+  }
+}

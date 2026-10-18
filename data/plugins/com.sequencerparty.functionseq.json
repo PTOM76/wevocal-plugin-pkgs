@@ -1,0 +1,27 @@
+{
+  "id": "com.sequencerparty.functionseq",
+  "sourceId": "com.sequencerParty.functionSeq",
+  "name": "Function Sequencer",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Collaborative live-coding javascript sequencer.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/functionseq/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/functionseq/screenshot.png",
+  "categories": [
+    "MIDI",
+    "Sequencer"
+  ],
+  "keywords": [
+    "sequencer",
+    "javascript",
+    "midi"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/functionseq/descriptor.json"
+  }
+}

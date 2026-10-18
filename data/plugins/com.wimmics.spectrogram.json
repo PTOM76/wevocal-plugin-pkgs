@@ -1,0 +1,26 @@
+{
+  "id": "com.wimmics.spectrogram",
+  "sourceId": "com.wimmics.spectrogram",
+  "name": "Spectrogram",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "TypeScript/React Spectrogram WebAudioModule. Author: Shihong Ren.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/SRVisualizers/dist/spectrogram/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/SRVisualizers/dist/spectrogram/screenshot.png",
+  "categories": [
+    "Effect",
+    "Visualization"
+  ],
+  "keywords": [
+    "spectrogram",
+    "visualization"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/SRVisualizers/dist/spectrogram/descriptor.json"
+  }
+}

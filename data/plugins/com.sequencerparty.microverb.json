@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.microverb",
+  "sourceId": "com.sequencerParty.microverb",
+  "name": "Microverb",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Convolution Reverb featuring IRs from some vintage cult-classic hardware units.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/reverb/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/reverb/screenshot.png",
+  "categories": [
+    "Effect",
+    "Reverb"
+  ],
+  "keywords": [
+    "effect",
+    "reverb"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/reverb/descriptor.json"
+  }
+}

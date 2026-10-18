@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.smoothdelay",
+  "sourceId": "com.wimmics.smoothdelay",
+  "name": "SmoothDelay",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "Delay that does't click or transpose when the delay time is changed, in Faust. Author: Yann Orlarey.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/SmoothDelay/index.js",
+  "website": "",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/SmoothDelay/default.png",
+  "categories": [
+    "Effect",
+    "Delay"
+  ],
+  "keywords": [
+    "delay"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/SmoothDelay/descriptor.json"
+  }
+}

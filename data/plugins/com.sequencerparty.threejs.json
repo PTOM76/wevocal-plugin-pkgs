@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.threejs",
+  "sourceId": "com.sequencerParty.threejs",
+  "name": "ThreeJS Video Generator",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Livecode 3d video scenes using three.js",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_threejs/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_threejs/screenshot.png",
+  "categories": [
+    "Video",
+    "Generator"
+  ],
+  "keywords": [
+    "video",
+    "generator"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/video_threejs/descriptor.json"
+  }
+}

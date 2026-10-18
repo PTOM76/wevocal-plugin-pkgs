@@ -1,0 +1,25 @@
+{
+  "id": "com.wimmics.dualpitchshifter",
+  "sourceId": "com.wimmics.dualpitchshifter",
+  "name": "DualPitchShifter",
+  "author": "Wimmics",
+  "version": "1.0.0",
+  "description": "Dual Pitch Shifter is a dual channel pitch shifter, based on Faust’s pitch_shifter.dsp by Grame. Pitch shifting is (intentionally) extremely basic and introduces significant delay based on window size.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/wimmics/DualPitchShifter/index.js",
+  "website": "Original web site with faust code by O.Larkin : https://www.rebeltech.org/patch-library/patch/DualPitchShifter. Authors: Michel Buffa for making it a WAM, Q. Beauchet for GUI improvements, original Faust Code : Oli Larkin",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/wimmics/DualPitchShifter/default.png",
+  "categories": [
+    "Effect",
+    "Pitch"
+  ],
+  "keywords": [
+    "blipper"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/wimmics/DualPitchShifter/descriptor.json"
+  }
+}

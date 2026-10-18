@@ -1,0 +1,26 @@
+{
+  "id": "com.sequencerparty.simpledistortion",
+  "sourceId": "com.sequencerParty.simpleDistortion",
+  "name": "Simple Distortion",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Simple waveshaper-based distortion with variable curve and gain",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/distortion/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/distortion/screenshot.png",
+  "categories": [
+    "Effect",
+    "Distortion"
+  ],
+  "keywords": [
+    "effect",
+    "distortion"
+  ],
+  "installable": true,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/distortion/descriptor.json"
+  }
+}

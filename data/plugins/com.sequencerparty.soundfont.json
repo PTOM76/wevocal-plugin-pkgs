@@ -1,0 +1,25 @@
+{
+  "id": "com.sequencerparty.soundfont",
+  "sourceId": "com.sequencerParty.soundfont",
+  "name": "Soundfont Player",
+  "author": "Sequencer Party",
+  "version": "1.0.0",
+  "description": "Soundfont polyphonic instrument player.  Plays SF2 files converted to a web format.",
+  "type": "wam",
+  "url": "https://www.webaudiomodules.com/community/plugins/burns-audio/soundfont/index.js",
+  "website": "https://sequencer.party",
+  "thumbnail": "https://www.webaudiomodules.com/community/plugins/burns-audio/soundfont/screenshot.png",
+  "categories": [
+    "Instrument",
+    "Sampler"
+  ],
+  "keywords": [
+    "synth"
+  ],
+  "installable": false,
+  "source": {
+    "name": "WAM Community",
+    "catalog": "https://www.webaudiomodules.com/community/plugins.json",
+    "descriptor": "https://www.webaudiomodules.com/community/plugins/burns-audio/soundfont/descriptor.json"
+  }
+}

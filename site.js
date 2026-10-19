@@ -42,7 +42,7 @@ function render() {
     author.className = 'meta'
     author.textContent = `${entry.author} · ${entry.type.toUpperCase()}`
     const description = document.createElement('p')
-    description.textContent = entry.description || 'No description provided.'
+    description.textContent = entry.description || '説明はありません。'
     const tags = document.createElement('div')
     tags.className = 'tags'
     for (const label of entry.categories) {
@@ -57,7 +57,7 @@ function render() {
     if (install) {
       const plugin = document.createElement('a')
       plugin.href = install
-      plugin.textContent = 'Plugin source'
+      plugin.textContent = '配布元'
       plugin.target = '_blank'
       plugin.rel = 'noopener noreferrer'
       links.append(plugin)
@@ -66,16 +66,20 @@ function render() {
     if (website) {
       const authorLink = document.createElement('a')
       authorLink.href = website
-      authorLink.textContent = 'Website'
+      authorLink.textContent = '作者サイト'
       authorLink.target = '_blank'
       authorLink.rel = 'noopener noreferrer'
       links.append(authorLink)
     }
+    const metadata = document.createElement('a')
+    metadata.href = new URL(`./data/plugins/${encodeURIComponent(entry.id)}.json`, import.meta.url).href
+    metadata.textContent = 'JSON'
+    links.append(metadata)
     body.append(title, author, description, tags, links)
     card.append(body)
     cards.append(card)
   }
-  status.textContent = `${visible.length} of ${entries.length} plugins`
+  status.textContent = `${entries.length} 件中 ${visible.length} 件を表示`
 }
 
 search.addEventListener('input', render)
@@ -84,9 +88,9 @@ try {
   const response = await fetch(catalogUrl)
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const catalog = await response.json()
-  if (catalog.version !== 1 || !Array.isArray(catalog.plugins)) throw new Error('Unsupported catalog format')
+  if (catalog.version !== 1 || !Array.isArray(catalog.plugins)) throw new Error('カタログの形式に対応していません')
   entries = catalog.plugins
   render()
 } catch (error) {
-  status.textContent = `Could not load the catalog: ${error instanceof Error ? error.message : String(error)}`
+  status.textContent = `カタログを読み込めませんでした: ${error instanceof Error ? error.message : String(error)}`
 }

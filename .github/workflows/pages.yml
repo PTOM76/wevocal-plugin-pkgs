@@ -1,4 +1,4 @@
-name: Publish catalog
+name: カタログを公開
 
 on:
   push:
@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   deploy:
+    name: GitHub Pages に公開
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -23,14 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - name: Assemble website
+      - name: 公開ファイルを準備
         run: |
-          mkdir -p _site/data
+          mkdir -p _site
           cp index.html site.css site.js _site/
-          cp data/index.json _site/data/
+          cp -R data _site/data
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-      - name: Deploy to GitHub Pages
+      - name: GitHub Pages に公開
         id: deployment
         uses: actions/deploy-pages@v4

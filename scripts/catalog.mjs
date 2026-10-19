@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 const root = resolve(import.meta.dirname, '..')
 const pluginsDir = resolve(root, 'data/plugins')
 const indexPath = resolve(root, 'data/index.json')
+const wamIndexPath = resolve(root, 'data/wam.json')
 const sourceUrl = 'https://www.webaudiomodules.com/community/plugins.json'
 const wamBase = 'https://www.webaudiomodules.com/community/plugins/'
 const validTypes = new Set(['wam', 'manifest', 'vst'])
@@ -13,33 +14,33 @@ function assertHttps(value, label) {
   try {
     url = new URL(value)
   } catch {
-    throw new Error(`${label} must be an absolute HTTPS URL`)
+    throw new Error(`${label} には HTTPS の絶対 URL が必要です`)
   }
-  if (url.protocol !== 'https:') throw new Error(`${label} must use HTTPS`)
+  if (url.protocol !== 'https:') throw new Error(`${label} は HTTPS にしてください`)
   return url.href
 }
 
 function fileId(value) {
   const id = String(value).toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '')
-  if (!/^[a-z0-9][a-z0-9._-]{1,95}$/.test(id)) throw new Error(`Invalid plugin id: ${value}`)
+  if (!/^[a-z0-9][a-z0-9._-]{1,95}$/.test(id)) throw new Error(`プラグイン ID が不正です: ${value}`)
   return id
 }
 
 function normalizeEntry(raw) {
-  if (!raw || typeof raw !== 'object') throw new Error('Plugin entry must be an object')
+  if (!raw || typeof raw !== 'object') throw new Error('プラグイン情報はオブジェクトである必要があります')
   if (typeof raw.id !== 'string' || typeof raw.name !== 'string' || typeof raw.author !== 'string') {
-    throw new Error('Plugin entry requires id, name, and author')
+    throw new Error('プラグイン情報には id、name、author が必要です')
   }
-  if (!validTypes.has(raw.type)) throw new Error(`Unsupported plugin type: ${raw.type}`)
-  const url = assertHttps(raw.url, 'url')
+  if (!validTypes.has(raw.type)) throw new Error(`未対応のプラグイン種別です: ${raw.type}`)
+  const url = assertHttps(raw.url, '配布 URL')
   if (raw.type === 'wam' && !url.toLowerCase().split(/[?#]/, 1)[0].endsWith('.js')) {
-    throw new Error('WAM plugin URL must end in .js')
+    throw new Error('WAM プラグインの URL は .js で終わる必要があります')
   }
   if (raw.type === 'manifest' && !url.toLowerCase().split(/[?#]/, 1)[0].endsWith('.json')) {
-    throw new Error('Manifest URL must end in .json')
+    throw new Error('マニフェストの URL は .json で終わる必要があります')
   }
   if (raw.type === 'vst' && !url.toLowerCase().split(/[?#]/, 1)[0].endsWith('.dll')) {
-    throw new Error('VST URL must end in .dll')
+    throw new Error('VST の URL は .dll で終わる必要があります')
   }
   return {
     id: fileId(raw.id),
@@ -51,7 +52,7 @@ function normalizeEntry(raw) {
     type: raw.type,
     url,
     website: String(raw.website ?? '').slice(0, 500),
-    thumbnail: raw.thumbnail ? assertHttps(raw.thumbnail, 'thumbnail') : '',
+    thumbnail: raw.thumbnail ? assertHttps(raw.thumbnail, 'サムネイル URL') : '',
     categories: Array.isArray(raw.categories) ? raw.categories.map(String) : [],
     keywords: Array.isArray(raw.keywords) ? raw.keywords.map(String) : [],
     installable: raw.installable !== false,
@@ -80,16 +81,16 @@ async function withConcurrency(items, concurrency, task) {
 
 async function fetchJson(url) {
   const response = await fetch(url, { signal: AbortSignal.timeout(20000) })
-  if (!response.ok) throw new Error(`Request failed (${response.status}): ${url}`)
+  if (!response.ok) throw new Error(`取得に失敗しました（${response.status}）: ${url}`)
   return response.json()
 }
 
 async function syncWam() {
   const upstream = await fetchJson(sourceUrl)
-  if (!Array.isArray(upstream)) throw new Error('WAM catalog response is not an array')
+  if (!Array.isArray(upstream)) throw new Error('WAM カタログの応答が配列ではありません')
   const records = await withConcurrency(upstream, 5, async (item) => {
     if (typeof item.identifier !== 'string' || typeof item.path !== 'string' || item.path.startsWith('/') || item.path.split('/').includes('..')) {
-      throw new Error(`Invalid WAM catalog entry: ${JSON.stringify(item)}`)
+      throw new Error(`WAM カタログの項目が不正です: ${JSON.stringify(item)}`)
     }
     const url = new URL(item.path, wamBase).href
     const descriptorUrl = new URL('descriptor.json', url).href
@@ -100,7 +101,7 @@ async function syncWam() {
       installable = descriptor.isInstrument !== true && descriptor.hasAudioInput !== false && descriptor.hasAudioOutput !== false
       version = typeof descriptor.version === 'string' ? descriptor.version : ''
     } catch (error) {
-      console.warn(`Could not inspect WAM descriptor for ${item.identifier}: ${error instanceof Error ? error.message : String(error)}`)
+      console.warn(`WAM の descriptor を確認できませんでした（${item.identifier}）: ${error instanceof Error ? error.message : String(error)}`)
       installable = false
     }
     return {
@@ -123,7 +124,7 @@ async function syncWam() {
   const entries = records.map(normalizeEntry)
   const ids = new Set()
   for (const entry of entries) {
-    if (ids.has(entry.id)) throw new Error(`Duplicate WAM plugin id: ${entry.id}`)
+    if (ids.has(entry.id)) throw new Error(`WAM プラグイン ID が重複しています: ${entry.id}`)
     ids.add(entry.id)
   }
   await mkdir(pluginsDir, { recursive: true })
@@ -135,35 +136,39 @@ async function syncWam() {
     const previous = JSON.parse(await readFile(resolve(pluginsDir, name), 'utf8'))
     if (previous.source?.catalog === sourceUrl) await unlink(resolve(pluginsDir, name))
   }
-  console.log(`Imported ${entries.length} WAM entries (${entries.filter((entry) => entry.installable).length} compatible with WeVocal FX).`)
+  console.log(`WAM エントリーを ${entries.length} 件取り込みました（WeVocal FX 対応: ${entries.filter((entry) => entry.installable).length} 件）。`)
 }
 
 async function addEntry(input) {
   const entry = await writeEntry(input)
-  console.log(`Registered ${entry.id}`)
+  console.log(`登録しました: ${entry.id}`)
 }
 
-async function buildIndex() {
-  const files = (await readdir(pluginsDir)).filter((name) => name.endsWith('.json')).sort()
-  const entries = []
-  for (const name of files) {
-    const entry = normalizeEntry(JSON.parse(await readFile(resolve(pluginsDir, name), 'utf8')))
-    entries.push(entry)
-  }
-  const ids = new Set()
-  for (const entry of entries) {
-    if (ids.has(entry.id)) throw new Error(`Duplicate plugin id: ${entry.id}`)
-    ids.add(entry.id)
-  }
+async function writeIndex(path, entries) {
   let updatedAt = new Date().toISOString()
   try {
-    const previous = JSON.parse(await readFile(indexPath, 'utf8'))
+    const previous = JSON.parse(await readFile(path, 'utf8'))
     if (JSON.stringify(previous.plugins) === JSON.stringify(entries) && typeof previous.updatedAt === 'string') updatedAt = previous.updatedAt
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error
   }
-  await writeFile(indexPath, `${JSON.stringify({ version: 1, updatedAt, plugins: entries }, null, 2)}\n`)
-  console.log(`Validated ${entries.length} plugins.`)
+  await writeFile(path, `${JSON.stringify({ version: 1, updatedAt, plugins: entries }, null, 2)}\n`)
+}
+
+async function buildIndex() {
+  const files = (await readdir(pluginsDir)).filter((name) => name.endsWith('.json')).sort()
+  const entries = await Promise.all(files.map(async (name) => normalizeEntry(JSON.parse(await readFile(resolve(pluginsDir, name), 'utf8')))))
+  const ids = new Set()
+  for (const entry of entries) {
+    if (ids.has(entry.id)) throw new Error(`プラグイン ID が重複しています: ${entry.id}`)
+    ids.add(entry.id)
+  }
+  const wamEntries = entries.filter((entry) => entry.type === 'wam')
+  await Promise.all([
+    writeIndex(indexPath, entries),
+    writeIndex(wamIndexPath, wamEntries),
+  ])
+  console.log(`プラグイン ${entries.length} 件を検証しました（WAM: ${wamEntries.length} 件）。`)
 }
 
 const [command, ...args] = process.argv.slice(2)
@@ -186,5 +191,5 @@ if (command === 'sync-wam') {
 } else if (command === 'validate') {
   await buildIndex()
 } else {
-  throw new Error('Usage: node scripts/catalog.mjs <sync-wam|add|validate>')
+  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|validate>')
 }

@@ -31,10 +31,15 @@ React と MUI で構成したカタログ画面から、プラグインを名前
 
 1. ChreeIDで公開OIDCクライアントを作成する。許可するリダイレクトURIは `https://plugins.wevocal.pitan76.net/`、スコープは `openid`、クライアントシークレットなし（PKCE / S256）にする。
 2. ChreeIDをデプロイする。トークン交換エンドポイント（`/oauth/token`）は、ブラウザーSPAから利用できるよう全OriginのCORSを許可する。資格情報（Cookie等）は許可せず、認可コード、登録済みリダイレクトURI、PKCEで保護する。他のエンドポイントにはこの許可を適用しない。
-3. RSA鍵ペアをローカルで生成し、GitHub Actions変数 `CHREEID_LINK_PUBLIC_KEY` に公開鍵のDER/base64値、Actions Secret `CHREEID_LINK_PRIVATE_KEY` に秘密鍵PEMを設定する。秘密鍵はリポジトリへ追加しない。
-4. GitHub Actions変数 `CHREEID_CLIENT_ID` にOIDCクライアントIDを設定する。
+3. このリポジトリ用のRSA鍵ペアをローカルで生成する。これはChreeIDサービスの署名鍵ではなく、Issueに投稿する前にブラウザー上のIDトークンを暗号化し、Actionsだけが復号できるようにする鍵。PowerShellなどでOpenSSLを使い、次のコマンドで生成する。
+   ```sh
+   openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out chreeid-link-private.pem
+   openssl pkey -in chreeid-link-private.pem -pubout -outform DER | openssl base64 -A
+   ```
+   2行目の出力をGitHub Actions変数 `CHREEID_LINK_PUBLIC_KEY` に、`chreeid-link-private.pem` の内容をActions Secret `CHREEID_LINK_PRIVATE_KEY` に設定する。秘密鍵はリポジトリへ追加しない。
+4. ChreeIDに登録した公開OIDCクライアントのクライアントIDを、GitHub Actions変数 `CHREEID_CLIENT_ID` に設定する。これはアカウントのパスワードや秘密鍵ではない。
 
-PagesのビルドでActions変数がフロントエンドへ渡る。ChreeIDクライアントの登録、鍵とActions変数/Secretが揃うまでは連携を利用できない。
+Pagesのビルドで公開用の `CHREEID_CLIENT_ID` と暗号化用公開鍵がフロントエンドへ渡る。ChreeIDクライアントの登録、鍵とActions変数/Secretが揃うまでは連携を利用できない。
 
 ローカルで画面を確認・ビルドするには、Node.js 22 を用意して次を実行する。
 ```sh

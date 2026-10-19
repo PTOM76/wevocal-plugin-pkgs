@@ -20,9 +20,6 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
-  Card,
-  CardContent,
-  CardActions,
   createTheme,
 } from '@mui/material'
 import ChreeidLinkPanel from './ChreeidLinkPanel.jsx'

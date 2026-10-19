@@ -1,11 +1,13 @@
 // 公開GitHub Issueからログイン中のChreeIDに紐づく申請を検索する。
 const repository = 'PTOM76/wevocal-plugin-pkgs'
 const apiBase = `https://api.github.com/repos/${repository}`
+const apiPath = new URL(apiBase).pathname
 const searchUrl = 'https://api.github.com/search/issues'
 const linkedMarker = '<!-- chreeid-linked:v1 -->'
 
 function escapeCommentText(value) {
-  return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('`', '&#96;')
+  return value.replaceAll('\\', '\\\\').replaceAll('\r', '\\r').replaceAll('\n', '\\n').replaceAll('\t', '\\t')
+    .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('`', '&#96;')
 }
 
 async function getJson(url, fetcher, signal) {
@@ -22,7 +24,7 @@ async function getJson(url, fetcher, signal) {
 
 async function linkedCommentExists(issue, sub, fetcher, signal) {
   const commentsUrl = new URL(issue.comments_url)
-  if (commentsUrl.origin !== 'https://api.github.com' || !commentsUrl.pathname.startsWith(`${apiBase}/issues/`)) {
+  if (commentsUrl.origin !== 'https://api.github.com' || !commentsUrl.pathname.startsWith(`${apiPath}/issues/`)) {
     throw new Error('GitHub APIから不正なコメントURLが返されました')
   }
 

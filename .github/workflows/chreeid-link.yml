@@ -108,7 +108,8 @@ jobs:
             }
             const sub = Buffer.from(encodedSub, 'base64url').toString('utf8')
             if (!sub) throw new Error('検証済みのChreeID subが空です')
-            const escapedSub = sub.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('`', '&#96;')
+            const escapedSub = sub.replaceAll('\\', '\\\\').replaceAll('\r', '\\r').replaceAll('\n', '\\n').replaceAll('\t', '\\t')
+              .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('`', '&#96;')
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,

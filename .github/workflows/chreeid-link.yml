@@ -89,14 +89,25 @@ jobs:
           CHREEID_LINK_PRIVATE_KEY: ${{ secrets.CHREEID_LINK_PRIVATE_KEY }}
           CHREEID_CLIENT_ID: ${{ vars.CHREEID_CLIENT_ID }}
         run: |
-          echo "sub=$(node scripts/chreeid-link.mjs verify "$GITHUB_EVENT_PATH")" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          sub="$(node scripts/chreeid-link.mjs verify "$GITHUB_EVENT_PATH")"
+          if [[ -z "$sub" ]]; then
+            echo "ChreeID sub が空です" >&2
+            exit 1
+          fi
+          printf 'sub=%s\n' "$sub" >> "$GITHUB_OUTPUT"
       - name: GitHub投稿者との連携を記録
         uses: actions/github-script@v7
         env:
           CHREEID_SUB: ${{ steps.proof.outputs.sub }}
         with:
           script: |
-            const sub = Buffer.from(process.env.CHREEID_SUB, 'base64url').toString('utf8')
+            const encodedSub = process.env.CHREEID_SUB
+            if (!encodedSub || !/^[A-Za-z0-9_-]+$/.test(encodedSub)) {
+              throw new Error('検証済みのChreeID subがありません')
+            }
+            const sub = Buffer.from(encodedSub, 'base64url').toString('utf8')
+            if (!sub) throw new Error('検証済みのChreeID subが空です')
             const escapedSub = sub.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('`', '&#96;')
             await github.rest.issues.createComment({
               ...context.repo,

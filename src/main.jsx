@@ -264,14 +264,22 @@ function App() {
       >
       <Container maxWidth="md">
         <Toolbar disableGutters sx={{ minHeight: '40px !important' }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: 700, flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            noWrap
+            sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
+          >
             WeVocal Plugin Packages
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} sx={{ flexShrink: 0 }}>
             {account ? (
               <Button onClick={logout} size="small">ログアウト</Button>
             ) : (
-              <Button onClick={login} variant="outlined" size="small">ChreeIDログイン</Button>
+              <Button onClick={login} variant="outlined" size="small" aria-label="ChreeIDでログイン">
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>ChreeID </Box>
+                ログイン
+              </Button>
             )}
             <Button
               component="a"

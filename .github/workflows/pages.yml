@@ -1,4 +1,4 @@
-name: カタログを公開
+name: デプロイ
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: GitHub Pages に公開
+    name: GitHub Pages にデプロイ
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -24,14 +24,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - name: 公開ファイルを準備
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: 依存パッケージをインストール
+        run: npm ci
+      - name: サイトをビルド
+        run: npm run build
+      - name: JSON カタログを配置
         run: |
-          mkdir -p _site
-          cp index.html site.css site.js _site/
-          cp -R data _site/data
+          cp -R data dist/data
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
-      - name: GitHub Pages に公開
+          path: dist
+      - name: GitHub Pages にデプロイ
         id: deployment
         uses: actions/deploy-pages@v4

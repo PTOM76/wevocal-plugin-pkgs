@@ -3,29 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="WeVocal Studio で使えるプラグインを検索できます。">
+    <meta name="description" content="WeVocalシリーズのプラグインやWeb Audio Modulesのプラグインを検索できます。">
     <title>WeVocal Plugin Packages</title>
-    <link rel="stylesheet" href="./site.css">
-    <script type="module" src="./site.js"></script>
   </head>
   <body>
-    <header>
-      <h1>WeVocalプラグイン</h1>
-      <p>作者が配信しているプラグインを検索できます。インストールは WeVocal Studio/Synth から行ってください。</p>
-      <label class="search">
-        <span class="visually-hidden">プラグインを検索</span>
-        <input id="search" type="search" placeholder="名前、作者、カテゴリで検索">
-      </label>
-      <p id="status" role="status">カタログを読み込んでいます…</p>
-    </header>
-    <main>
-      <section id="plugins" class="plugins" aria-label="プラグイン一覧"></section>
-    </main>
-    <footer>
-      <a href="https://github.com/PTOM76/wevocal-plugin-pkgs">カタログのソース</a>
-      <a href="./data/index.json">カタログ JSON</a>
-      <a href="./data/wam.json">WAM のみの JSON</a>
-      <span>プラグイン本体は各作者の配信元から取得します。</span>
-    </footer>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

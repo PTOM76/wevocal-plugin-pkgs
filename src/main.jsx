@@ -277,7 +277,6 @@ function App() {
               <Button onClick={logout} size="small">ログアウト</Button>
             ) : (
               <Button onClick={login} variant="outlined" size="small" aria-label="ChreeIDでログイン">
-                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>ChreeID </Box>
                 ログイン
               </Button>
             )}

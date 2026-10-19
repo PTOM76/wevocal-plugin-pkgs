@@ -1,2 +1,4 @@
 node_modules/
 dist/
+chreeid-link-private.pem
+chreeid-link-public-key.txt

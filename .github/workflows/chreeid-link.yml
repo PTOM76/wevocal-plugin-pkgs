@@ -1,0 +1,115 @@
+# GitHub Issue作者だけがChreeIDリンクを開始/完了できるようにする。
+name: ChreeID連携を確認
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+concurrency:
+  group: chreeid-link-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  start:
+    if: >-
+      github.event.issue.pull_request == null &&
+      github.event.issue.user.login == github.event.comment.user.login &&
+      contains(github.event.issue.body, '<!-- plugin-submission-v1 -->') &&
+      github.event.comment.body == '/link-chreeid'
+    name: Issue専用のChreeID認証リンクを発行
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Issue専用nonceを生成
+        id: challenge
+        env:
+          CHREEID_LINK_PRIVATE_KEY: ${{ secrets.CHREEID_LINK_PRIVATE_KEY }}
+        run: |
+          echo "nonce=$(node scripts/chreeid-link.mjs challenge "$GITHUB_EVENT_PATH")" >> "$GITHUB_OUTPUT"
+      - name: 認証リンクをIssueへ返信
+        uses: actions/github-script@v7
+        env:
+          CHREEID_NONCE: ${{ steps.challenge.outputs.nonce }}
+        with:
+          script: |
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: context.issue.number,
+            })
+            if (comments.some((comment) => comment.body.includes('<!-- chreeid-linked:v1 -->'))) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body: 'このIssueはすでにChreeID連携済みです。',
+              })
+              return
+            }
+            const url = new URL('https://plugins.wevocal.pitan76.net/')
+            url.searchParams.set('chreeid_issue', String(context.issue.number))
+            url.searchParams.set('chreeid_nonce', process.env.CHREEID_NONCE)
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: `[ChreeID連携を開始](${url.href})\n\n認証後、画面のコマンドをこのIssueにコメントしてください。認証情報は暗号化してActions内だけで検証します。`,
+            })
+
+  verify:
+    if: >-
+      github.event.issue.pull_request == null &&
+      github.event.issue.user.login == github.event.comment.user.login &&
+      contains(github.event.issue.body, '<!-- plugin-submission-v1 -->') &&
+      startsWith(github.event.comment.body, '/chreeid-proof ')
+    name: 暗号化されたChreeID証明を検証
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Issueの連携状態を確認
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: context.issue.number,
+            })
+            if (comments.some((comment) => comment.body.includes('<!-- chreeid-linked:v1 -->'))) {
+              core.setFailed('このIssueはすでにChreeID連携済みです。')
+            }
+      - name: ChreeID IDトークンを復号・検証
+        id: proof
+        env:
+          CHREEID_LINK_PRIVATE_KEY: ${{ secrets.CHREEID_LINK_PRIVATE_KEY }}
+          CHREEID_CLIENT_ID: ${{ vars.CHREEID_CLIENT_ID }}
+        run: |
+          echo "sub=$(node scripts/chreeid-link.mjs verify "$GITHUB_EVENT_PATH")" >> "$GITHUB_OUTPUT"
+      - name: GitHub投稿者との連携を記録
+        uses: actions/github-script@v7
+        env:
+          CHREEID_SUB: ${{ steps.proof.outputs.sub }}
+        with:
+          script: |
+            const sub = Buffer.from(process.env.CHREEID_SUB, 'base64url').toString('utf8')
+            const escapedSub = sub.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('`', '&#96;')
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: `<!-- chreeid-linked:v1 -->\nChreeIDアカウントとの連携を確認しました。\n\n- ChreeID sub: \`${escapedSub}\`\n- GitHub投稿者: @${context.payload.issue.user.login}`,
+            })
+      - name: 検証失敗を通知
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: 'ChreeID連携を確認できませんでした。Issue投稿者本人が最新の連携リンクを使ってください。',
+            })

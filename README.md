@@ -24,6 +24,18 @@ React と MUI で構成したカタログ画面から、プラグインを名前
 
 投稿受付には Issues を有効にし、リポジトリ設定で GitHub Actions によるプルリクエスト作成を許可する必要がある。
 
+## 任意のChreeID連携
+掲載申請を作成したIssueに投稿者本人が `/link-chreeid` とコメントすると、Issue専用のnonce付きログインリンクが返信される。ChreeIDで認証後に暗号化証明を同じIssueへコメントすると、GitHub ActionsがChreeIDの署名、宛先、nonce、有効期限とGitHub投稿者を検証する。IDトークンは公開Issueに載せず、成功時には明示的に同意したChreeID `sub` を公開コメントに記録する。ChreeID連携は任意で、Issue投稿やプラグイン審査の条件ではない。
+
+有効化には次の設定が必要。
+
+1. ChreeIDで公開OIDCクライアントを作成する。許可するリダイレクトURIは `https://plugins.wevocal.pitan76.net/`、スコープは `openid`、クライアントシークレットなし（PKCE / S256）にする。
+2. ChreeIDをデプロイする。トークン交換エンドポイント（`/oauth/token`）は、ブラウザーSPAから利用できるよう全OriginのCORSを許可する。資格情報（Cookie等）は許可せず、認可コード、登録済みリダイレクトURI、PKCEで保護する。他のエンドポイントにはこの許可を適用しない。
+3. RSA鍵ペアをローカルで生成し、GitHub Actions変数 `CHREEID_LINK_PUBLIC_KEY` に公開鍵のDER/base64値、Actions Secret `CHREEID_LINK_PRIVATE_KEY` に秘密鍵PEMを設定する。秘密鍵はリポジトリへ追加しない。
+4. GitHub Actions変数 `CHREEID_CLIENT_ID` にOIDCクライアントIDを設定する。
+
+PagesのビルドでActions変数がフロントエンドへ渡る。ChreeIDクライアントの登録、鍵とActions変数/Secretが揃うまでは連携を利用できない。
+
 ローカルで画面を確認・ビルドするには、Node.js 22 を用意して次を実行する。
 ```sh
 npm ci

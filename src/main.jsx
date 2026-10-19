@@ -22,6 +22,7 @@ import {
   Typography,
   createTheme,
 } from '@mui/material'
+import ChreeidLinkPanel from './ChreeidLinkPanel.jsx'
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
@@ -214,6 +215,7 @@ function App() {
       </AppBar>
 
       <Container component="main" maxWidth="md" sx={{ flexGrow: 1, pt: 3, pb: 8 }}>
+        <ChreeidLinkPanel />
         <TextField
           fullWidth
           value={query}

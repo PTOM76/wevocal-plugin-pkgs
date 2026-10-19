@@ -31,6 +31,9 @@ jobs:
       - name: 依存パッケージをインストール
         run: npm ci
       - name: サイトをビルド
+        env:
+          VITE_CHREEID_CLIENT_ID: ${{ vars.CHREEID_CLIENT_ID }}
+          VITE_CHREEID_LINK_PUBLIC_KEY: ${{ vars.CHREEID_LINK_PUBLIC_KEY }}
         run: npm run build
       - name: JSON カタログを配置
         run: |

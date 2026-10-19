@@ -57,7 +57,7 @@ jobs:
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
-              body: `投稿を受け付け、レビュー用の PR #${number} を作成しました。確認後にメンテナーがマージします。`,
+              body: `投稿を受け付け、レビュー用の PR #${number} を作成しました。確認後にメンテナーがマージします。\n\n任意でChreeIDアカウントを連携する場合は、このIssueに \`/link-chreeid\` とコメントしてください。`,
             })
       - name: 失敗を Issue に通知
         if: failure()

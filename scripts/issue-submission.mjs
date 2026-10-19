@@ -3,7 +3,6 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const sentinel = '<!-- plugin-submission-v1 -->'
 const fieldNames = [
   '種別',
   'ID',
@@ -16,7 +15,7 @@ const fieldNames = [
 ]
 
 export function parseIssueSubmission(body) {
-  if (typeof body !== 'string' || body.length > 20_000 || !body.includes(sentinel)) {
+  if (typeof body !== 'string' || body.length > 20_000) {
     throw new Error('プラグイン登録フォームの Issue ではありません')
   }
 

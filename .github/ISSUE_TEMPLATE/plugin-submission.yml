@@ -6,7 +6,6 @@ body:
   - type: markdown
     attributes:
       value: |
-        <!-- plugin-submission-v1 -->
         GitHub アカウントで投稿者を確認します。配布元が公開しているURLを入力してください。
   - type: dropdown
     id: type

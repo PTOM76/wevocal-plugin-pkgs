@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   submit:
-    if: contains(github.event.issue.body, '<!-- plugin-submission-v1 -->')
+    if: startsWith(github.event.issue.title, '[プラグイン登録]')
     name: 投稿を検証してプルリクエストを作成
     runs-on: ubuntu-latest
     steps:

@@ -8,9 +8,7 @@ import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { parseIssueSubmission } from './issue-submission.mjs'
 
-const validBody = `<!-- plugin-submission-v1 -->
-
-### 種別
+const validBody = `### 種別
 wam
 
 ### ID
@@ -48,8 +46,8 @@ test('converts a valid Issue Form into catalog metadata', () => {
   })
 })
 
-test('rejects issues without the submission marker', () => {
-  assert.throws(() => parseIssueSubmission(validBody.replace('<!-- plugin-submission-v1 -->', '')), /フォームの Issue ではありません/)
+test('rejects issues without all submission fields', () => {
+  assert.throws(() => parseIssueSubmission(validBody.replace('### 種別\nwam\n\n', '')), /項目が不足/)
 })
 
 test('rejects multiline field values', () => {

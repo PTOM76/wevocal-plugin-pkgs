@@ -55,7 +55,7 @@ function eventFor(token, overrides = {}) {
   return {
     issue: {
       number: issueNumber,
-      body: '<!-- plugin-submission-v1 -->',
+      title: '[プラグイン登録]',
       user: { login: 'github-author' },
     },
     comment: {

@@ -25,6 +25,7 @@ import {
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
+const submissionUrl = `${sourceUrl}/issues/new?template=plugin-submission.yml`
 
 const theme = createTheme({
   palette: {
@@ -200,6 +201,17 @@ function App() {
           <Button component="a" href={sourceUrl} target="_blank" rel="noopener noreferrer" color="inherit">
             カタログのソース
           </Button>
+          <Button
+            component="a"
+            href={submissionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="contained"
+            size="small"
+            sx={{ ml: 1 }}
+          >
+            登録を提案
+          </Button>
           </Toolbar>
         </Container>
       </AppBar>
@@ -213,7 +225,7 @@ function App() {
           プラグインカタログ
         </Typography>
         <Typography color="text.secondary" sx={{ fontSize: '0.875rem', mb: 2 }}>
-          作者が配信しているプラグインを検索できます。インストールは WeVocal Studio / Synth から行ってください。
+          作者が配信しているプラグインを検索できます。掲載を提案するには GitHub アカウントで投稿してください。インストールは WeVocal Studio / Synth から行ってください。
         </Typography>
         <TextField
           fullWidth

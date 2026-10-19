@@ -140,7 +140,14 @@ async function syncWam() {
 }
 
 async function addEntry(input) {
-  const entry = await writeEntry(input)
+  const entry = normalizeEntry(input)
+  try {
+    await readFile(resolve(pluginsDir, `${entry.id}.json`), 'utf8')
+    throw new Error(`プラグイン ID はすでに登録されています: ${entry.id}`)
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error
+  }
+  await writeEntry(entry)
   console.log(`登録しました: ${entry.id}`)
 }
 
@@ -188,8 +195,13 @@ if (command === 'sync-wam') {
     categories: categories.split(',').map((value) => value.trim()).filter(Boolean),
   })
   await buildIndex()
+} else if (command === 'add-json') {
+  const [path] = args
+  if (!path) throw new Error('登録する JSON ファイルのパスが必要です')
+  await addEntry(JSON.parse(await readFile(path, 'utf8')))
+  await buildIndex()
 } else if (command === 'validate') {
   await buildIndex()
 } else {
-  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|validate>')
+  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|validate>')
 }

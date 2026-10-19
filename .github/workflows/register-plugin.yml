@@ -7,9 +7,9 @@ on:
         description: 公式 WAM カタログを取り込むか、URL を 1 件登録します
         type: choice
         options:
-          - WAM カタログを同期
+          - WAMカタログを同期
           - URL を登録
-        default: WAM カタログを同期
+        default: WAMカタログを同期
         required: true
       type:
         description: 登録する URL の種類
@@ -50,7 +50,7 @@ on:
         required: false
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -62,11 +62,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: WAM カタログを取り込む
-        if: inputs.operation == 'WAM カタログを同期'
+      - name: WAMカタログを取り込む
+        if: inputs.operation == 'WAMカタログを同期'
         run: node scripts/catalog.mjs sync-wam
-      - name: プラグイン URL を登録
-        if: inputs.operation == 'URL を登録'
+      - name: プラグインURLを登録
+        if: inputs.operation == 'リンクを登録'
         env:
           PLUGIN_TYPE: ${{ inputs.type }}
           PLUGIN_ID: ${{ inputs.id }}
@@ -86,6 +86,6 @@ jobs:
           commit-message: "catalog: プラグイン登録情報を更新"
           title: "プラグインカタログ: 登録情報を更新"
           body: |
-            **プラグインを登録** ワークフローが作成しました。
+            プラグイン登録のワークフローを作成しました。
 
-            マージする前に、メタデータと配布元 URL を確認してください。このリポジトリにはプラグイン本体を保存しません。
+            マージする前に、メタデータと配布元リンクを確認してください。

@@ -22,7 +22,6 @@ import {
   Typography,
   createTheme,
 } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
@@ -101,7 +100,7 @@ function PluginCard({ entry }) {
         />
       )}
       <CardContent sx={{ flexGrow: 1 }}>
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 1, alignItems: 'center' }}>
           <Typography component="h2" variant="h6" sx={{ flexGrow: 1, lineHeight: 1.3 }}>
             {entry.name}
           </Typography>
@@ -114,7 +113,7 @@ function PluginCard({ entry }) {
           {entry.description || '説明はありません。'}
         </Typography>
         {!!entry.categories.length && (
-          <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap" sx={{ mt: 2 }}>
+          <Stack direction="row" spacing={0.75} useFlexGap sx={{ mt: 2, flexWrap: 'wrap' }}>
             {entry.categories.map((category) => (
               <Chip key={category} size="small" label={category} />
             ))}
@@ -182,22 +181,22 @@ function App() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <AppBar
-      position="sticky"
-      color="default"
-      elevation={0}
-      sx={{
-        py: 1,
-        bgcolor: 'rgba(255, 255, 255, 0.82)',
-        backdropFilter: 'blur(8px)',
-        borderBottom: 1,
-        borderColor: 'divider',
-      }}
+        position="sticky"
+        color="default"
+        elevation={0}
+        sx={{
+          py: 1,
+          bgcolor: 'rgba(255, 255, 255, 0.82)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
       >
       <Container maxWidth="md">
         <Toolbar disableGutters sx={{ minHeight: '40px !important' }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 700, flexGrow: 1 }}>
-          WeVocal プラグイン
-        </Typography>
+          <Typography variant="h6" component="div" sx={{ fontWeight: 700, flexGrow: 1 }}>
+            WeVocal プラグイン
+          </Typography>
           <Button component="a" href={sourceUrl} target="_blank" rel="noopener noreferrer" color="inherit">
             カタログのソース
           </Button>
@@ -221,30 +220,37 @@ function App() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="名前、作者、カテゴリで検索"
-          inputProps={{ 'aria-label': 'プラグインを検索' }}
           sx={{ mb: 2 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
+          slotProps={{
+            htmlInput: { 'aria-label': 'プラグインを検索' },
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" sx={{ width: 20, height: 20, fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
+                  <circle cx="10.5" cy="10.5" r="6.5" />
+                  <path d="m16 16 4 4" />
+                </Box>
+                </InputAdornment>
+              ),
+            },
           }}
         />
 
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={1.5}
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
-          justifyContent="space-between"
-          sx={{ my: 2.5 }}
+          sx={{
+            my: 2.5,
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            justifyContent: 'space-between',
+          }}
         >
           <Typography role="status" color="text.secondary">
             {status === 'loading' && 'カタログを読み込んでいます…'}
             {status === 'ready' && `${entries.length} 件中 ${filtered.length} 件を表示`}
             {status === 'error' && 'カタログを読み込めませんでした'}
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap">
+          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
             <Button component="a" href={`${import.meta.env.BASE_URL}data/index.json`} size="small">
               カタログ JSON
             </Button>
@@ -286,7 +292,12 @@ function App() {
   )
 }
 
-createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root')
+if (!rootElement) throw new Error('アプリの表示先がありません')
+const root = import.meta.hot?.data.root ?? createRoot(rootElement)
+if (import.meta.hot) import.meta.hot.data.root = root
+
+root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <App />

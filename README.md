@@ -9,6 +9,24 @@
 
 静的ファイルは GitHub Pages で公開し、ブラウザーから閲覧できるウェブサイトとして提供する。
 
+## JSON 配信
+- `data/index.json`：全プラグインの一覧。
+- `data/wam.json`：WAM プラグインだけの一覧。
+- `data/plugins/<id>.json`：個別プラグインのメタデータ。
+
+GitHub Pages では、それぞれ `/data/index.json`、`/data/wam.json`、`/data/plugins/<id>.json` で取得できる。
+
+## ウェブサイト
+React と MUI で構成したカタログ画面から、プラグインを名前、作者、説明、カテゴリ、キーワードで検索できる。各プラグインのカードには配布元、作者サイト、個別 JSON へのリンクを表示する。
+
+ローカルで画面を確認・ビルドするには、Node.js 22 を用意して次を実行する。
+```sh
+npm ci
+npm run dev
+```
+
+本番用のビルドは `npm run build` で `dist/` に生成する。GitHub Pages のデプロイではビルド後に `data/` も配置して公開する。
+
 ## エントリーの追加
 Actions タブから Register plugin ワークフローを実行する。
 
@@ -31,4 +49,4 @@ node scripts/catalog.mjs sync-wam
 node scripts/catalog.mjs validate
 ```
 
-実行時の依存パッケージは不要。
+カタログの同期と検証スクリプトの実行に Node.js 以外の依存パッケージは不要。ウェブサイトの開発・ビルドには上記の npm 依存パッケージを使う。

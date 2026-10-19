@@ -18,7 +18,7 @@ jobs:
       github.event.issue.pull_request == null &&
       github.event.issue.user.login == github.event.comment.user.login &&
       startsWith(github.event.issue.title, '[プラグイン登録]') &&
-      github.event.comment.body == '/link-chreeid'
+      startsWith(github.event.comment.body, '/link-chreeid')
     name: Issue専用のChreeID認証リンクを発行
     runs-on: ubuntu-latest
     steps:

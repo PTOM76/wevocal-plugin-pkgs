@@ -1,7 +1,12 @@
 // Issue専用チャレンジを使ってChreeIDアカウントを任意で確認する画面。
 import { useEffect, useState } from 'react'
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
-import { beginChreeidLogin, completeChreeidLogin, encryptChreeidProof } from './chreeid.js'
+import {
+  beginChreeidLogin,
+  completeChreeidLogin,
+  encryptChreeidProof,
+  isChreeidAccountCallback,
+} from './chreeid.js'
 
 const ChreeidLinkPanel = () => {
   const [request, setRequest] = useState(null)
@@ -10,6 +15,7 @@ const ChreeidLinkPanel = () => {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
+    if (isChreeidAccountCallback(window.location.search)) return
     const params = new URLSearchParams(window.location.search)
     const issue = params.get('chreeid_issue')
     const nonce = params.get('chreeid_nonce')

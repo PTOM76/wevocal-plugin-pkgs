@@ -20,9 +20,20 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
+  Card,
+  CardContent,
+  CardActions,
   createTheme,
 } from '@mui/material'
 import ChreeidLinkPanel from './ChreeidLinkPanel.jsx'
+import {
+  beginChreeidAccountLogin,
+  completeChreeidAccountLogin,
+  getChreeidAccount,
+  isChreeidAccountCallback,
+  logoutChreeidAccount,
+} from './chreeid.js'
+import { fetchChreeidSubmissions } from './chreeidSubmissions.js'
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
@@ -146,6 +157,31 @@ function App() {
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
+  const [account, setAccount] = useState(getChreeidAccount)
+  const [accountError, setAccountError] = useState('')
+  const [submissions, setSubmissions] = useState([])
+  const [submissionsStatus, setSubmissionsStatus] = useState('idle')
+
+  useEffect(() => {
+    const callbackSearch = window.location.search
+    if (!isChreeidAccountCallback(callbackSearch)) return
+    window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash}`)
+
+    let cancelled = false
+    completeChreeidAccountLogin(callbackSearch)
+      .then((result) => {
+        if (!cancelled) {
+          setAccount(result)
+          setAccountError('')
+        }
+      })
+      .catch((reason) => {
+        if (!cancelled) setAccountError(reason instanceof Error ? reason.message : String(reason))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -168,6 +204,41 @@ function App() {
       })
     return () => controller.abort()
   }, [])
+
+  useEffect(() => {
+    if (!account) {
+      setSubmissions([])
+      setSubmissionsStatus('idle')
+      return undefined
+    }
+
+    const controller = new AbortController()
+    setSubmissionsStatus('loading')
+    fetchChreeidSubmissions(account.sub, { signal: controller.signal })
+      .then((items) => {
+        setSubmissions(items)
+        setSubmissionsStatus('ready')
+      })
+      .catch((reason) => {
+        if (reason instanceof DOMException && reason.name === 'AbortError') return
+        setAccountError(reason instanceof Error ? reason.message : String(reason))
+        setSubmissionsStatus('error')
+      })
+    return () => controller.abort()
+  }, [account])
+
+  const login = () => {
+    setAccountError('')
+    beginChreeidAccountLogin().catch((reason) => {
+      setAccountError(reason instanceof Error ? reason.message : String(reason))
+    })
+  }
+
+  const logout = () => {
+    logoutChreeidAccount()
+    setAccount(null)
+    setAccountError('')
+  }
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase()
@@ -199,23 +270,71 @@ function App() {
           <Typography variant="h6" component="div" sx={{ fontWeight: 700, flexGrow: 1 }}>
             WeVocal Plugin Packages
           </Typography>
-          <Button
-            component="a"
-            href={submissionUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="contained"
-            size="small"
-            sx={{ ml: 1 }}
-          >
-            登録申請
-          </Button>
+          <Stack direction="row" spacing={1}>
+            {account ? (
+              <Button onClick={logout} size="small">ログアウト</Button>
+            ) : (
+              <Button onClick={login} variant="outlined" size="small">ChreeIDログイン</Button>
+            )}
+            <Button
+              component="a"
+              href={submissionUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="contained"
+              size="small"
+            >
+              登録申請
+            </Button>
+          </Stack>
           </Toolbar>
         </Container>
       </AppBar>
 
       <Container component="main" maxWidth="md" sx={{ flexGrow: 1, pt: 3, pb: 8 }}>
         <ChreeidLinkPanel />
+        {accountError && <Alert severity="error" sx={{ mb: 2 }}>{accountError}</Alert>}
+        {account && (
+          <Box component="section" aria-labelledby="my-submissions-heading" sx={{ mb: 3 }}>
+            <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ mb: 0.5 }}>
+              自分の登録申請
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+              ChreeID連携済みの公開GitHub申請を表示しています。
+            </Typography>
+            {submissionsStatus === 'loading' && <CircularProgress aria-label="申請を読み込み中" size={24} />}
+            {submissionsStatus === 'error' && <Alert severity="error">登録申請を取得できませんでした。</Alert>}
+            {submissionsStatus === 'ready' && submissions.length === 0 && (
+              <Alert severity="info">
+                連携済みの申請はありません。申請Issueで <code>/link-chreeid</code> を実行すると一覧に表示されます。
+              </Alert>
+            )}
+            {submissionsStatus === 'ready' && submissions.length > 0 && (
+              <Stack spacing={1}>
+                {submissions.map((submission) => (
+                  <Card key={submission.number} variant="outlined">
+                    <CardContent sx={{ pb: 1 }}>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+                        <Typography component="h3" variant="subtitle1" sx={{ flexGrow: 1 }}>
+                          {submission.title} #{submission.number}
+                        </Typography>
+                        <Chip size="small" label={submission.state === 'open' ? '受付中・審査中' : 'クローズ'} />
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary">
+                        {new Intl.DateTimeFormat('ja-JP', { dateStyle: 'medium' }).format(new Date(submission.createdAt))}
+                      </Typography>
+                    </CardContent>
+                    <CardActions sx={{ px: 2, pt: 0 }}>
+                      <Button component="a" href={submission.url} target="_blank" rel="noopener noreferrer" size="small">
+                        GitHubで見る
+                      </Button>
+                    </CardActions>
+                  </Card>
+                ))}
+              </Stack>
+            )}
+          </Box>
+        )}
         <TextField
           fullWidth
           value={query}

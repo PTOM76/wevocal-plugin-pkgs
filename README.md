@@ -19,6 +19,8 @@ GitHub Pages では、それぞれ `/data/index.json`、`/data/wam.json`、`/dat
 ## ウェブサイト
 React と MUI で構成したカタログ画面から、プラグインを名前、作者、説明、カテゴリ、キーワードで検索できる。各プラグインのカードには配布元、作者サイト、個別 JSON へのリンクを表示する。
 
+ChreeIDでログインすると、GitHub Issue上で同じChreeIDアカウントとの連携を確認した登録申請を一覧表示する。ログイン状態はこのブラウザーのlocalStorageに保持し、ログアウトすると削除する。申請内容と審査状態は公開GitHub Issueから取得する。
+
 ## 掲載申請
 ウェブサイトの「登録申請」から GitHub Issue Form を開き、GitHub アカウントでプラグインのメタデータと配布 URL を送信する。GitHub Actions が入力を検証してレビュー用のプルリクエストを作成し、メンテナーが確認してから公開する。作者が公開しているURLのみを登録する。
 
@@ -30,7 +32,7 @@ React と MUI で構成したカタログ画面から、プラグインを名前
 有効化には次の設定が必要。
 
 1. ChreeIDで公開OIDCクライアントを作成する。許可するリダイレクトURIは `https://plugins.wevocal.pitan76.net/`、スコープは `openid`、クライアントシークレットなし（PKCE / S256）にする。
-2. ChreeIDをデプロイする。トークン交換エンドポイント（`/oauth/token`）は、ブラウザーSPAから利用できるよう全OriginのCORSを許可する。資格情報（Cookie等）は許可せず、認可コード、登録済みリダイレクトURI、PKCEで保護する。他のエンドポイントにはこの許可を適用しない。
+2. ChreeIDをデプロイする。トークン交換（`/oauth/token`）と公開署名鍵（`/oauth/jwks`）のエンドポイントは、ブラウザーSPAから利用できるよう全OriginのCORSを許可する。資格情報（Cookie等）は許可せず、トークン交換は認可コード、登録済みリダイレクトURI、PKCEで保護する。他のエンドポイントにはこの許可を適用しない。
 3. このリポジトリ用のRSA鍵ペアをローカルで生成する。これはChreeIDサービスの署名鍵ではなく、Issueに投稿する前にブラウザー上のIDトークンを暗号化し、Actionsだけが復号できるようにする鍵。PowerShellなどでOpenSSLを使い、次のコマンドで生成する。
    ```sh
    openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out chreeid-link-private.pem

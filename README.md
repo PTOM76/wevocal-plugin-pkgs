@@ -19,6 +19,11 @@ GitHub Pages では、それぞれ `/data/index.json`、`/data/wam.json`、`/dat
 ## ウェブサイト
 React と MUI で構成したカタログ画面から、プラグインを名前、作者、説明、カテゴリ、キーワードで検索できる。各プラグインのカードには配布元、作者サイト、個別 JSON へのリンクを表示する。
 
+## 掲載申請
+ウェブサイトの「登録申請」から GitHub Issue Form を開き、GitHub アカウントでプラグインのメタデータと配布 URL を送信する。GitHub Actions が入力を検証してレビュー用のプルリクエストを作成し、メンテナーが確認してから公開する。作者が公開しているURLのみを登録する。
+
+投稿受付には Issues を有効にし、リポジトリ設定で GitHub Actions によるプルリクエスト作成を許可する必要がある。
+
 ローカルで画面を確認・ビルドするには、Node.js 22 を用意して次を実行する。
 ```sh
 npm ci
@@ -47,6 +52,7 @@ Actions タブから Register plugin ワークフローを実行する。
 ```sh
 node scripts/catalog.mjs sync-wam
 node scripts/catalog.mjs validate
+npm test
 ```
 
 カタログの同期と検証スクリプトの実行に Node.js 以外の依存パッケージは不要。ウェブサイトの開発・ビルドには上記の npm 依存パッケージを使う。

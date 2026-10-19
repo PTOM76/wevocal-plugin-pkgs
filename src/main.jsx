@@ -196,11 +196,8 @@ function App() {
       <Container maxWidth="md">
         <Toolbar disableGutters sx={{ minHeight: '40px !important' }}>
           <Typography variant="h6" component="div" sx={{ fontWeight: 700, flexGrow: 1 }}>
-            WeVocal プラグイン
+            WeVocal Plugin Packages
           </Typography>
-          <Button component="a" href={sourceUrl} target="_blank" rel="noopener noreferrer" color="inherit">
-            カタログのソース
-          </Button>
           <Button
             component="a"
             href={submissionUrl}
@@ -210,23 +207,13 @@ function App() {
             size="small"
             sx={{ ml: 1 }}
           >
-            登録を提案
+            登録申請
           </Button>
           </Toolbar>
         </Container>
       </AppBar>
 
       <Container component="main" maxWidth="md" sx={{ flexGrow: 1, pt: 3, pb: 8 }}>
-        <Typography
-          variant="h1"
-          component="h1"
-          sx={{ fontSize: '1.375rem', fontWeight: 700, pb: 1, mb: 1, borderBottom: '2px solid', borderColor: 'divider' }}
-        >
-          プラグインカタログ
-        </Typography>
-        <Typography color="text.secondary" sx={{ fontSize: '0.875rem', mb: 2 }}>
-          作者が配信しているプラグインを検索できます。掲載を提案するには GitHub アカウントで投稿してください。インストールは WeVocal Studio / Synth から行ってください。
-        </Typography>
         <TextField
           fullWidth
           value={query}
@@ -293,7 +280,6 @@ function App() {
       <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', py: 2 }}>
         <Container maxWidth="md">
           <Typography variant="body2" color="text.secondary">
-            プラグイン本体は各作者の配信元から取得します。{' '}
             <Link href={sourceUrl} color="inherit" target="_blank" rel="noopener noreferrer">
               GitHub
             </Link>

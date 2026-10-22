@@ -52,16 +52,16 @@ export default function AppShell({ page, account, onLogin, onLogout, children })
               variant="h6"
               component="div"
               noWrap
-              sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
+              sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, lineHeight: 1, display: 'flex', alignItems: 'center', fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
             >
               <Link
                 href={catalogPath}
                 color="inherit"
                 underline="none"
-                sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}
+                sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, minWidth: 0 }}
               >
                 <Box component="img" src={`${base}favicon.svg`} alt="" sx={{ width: 28, height: 28, flexShrink: 0 }} />
-                <span>WeVocal Plugin Packages</span>
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'block' }, overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.4 }}>WeVocal Plugin Packages</Box>
               </Link>
             </Typography>
             <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} sx={{ flexShrink: 0 }}>

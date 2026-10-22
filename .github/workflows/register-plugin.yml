@@ -1,18 +1,25 @@
+# メンテナーがカタログを直接直す（WAM の同期、登録、更新、削除、投稿者の設定）。結果はレビュー用のプルリクエストにする。
 name: プラグインを登録
 
 on:
   workflow_dispatch:
     inputs:
       operation:
-        description: 公式 WAM カタログを取り込むか、URL を 1 件登録します
+        description: 行う操作
         type: choice
         options:
           - WAMカタログを同期
-          - URL を登録
+          - 登録
+          - 更新
+          - 削除
         default: WAMカタログを同期
         required: true
+      id:
+        description: 登録、更新、削除するプラグインの固定 ID
+        type: string
+        required: false
       type:
-        description: 登録する URL の種類
+        description: 種類（登録のときだけ使う）
         type: choice
         options:
           - wam
@@ -20,10 +27,6 @@ on:
           - vst
         default: wam
         required: true
-      id:
-        description: カタログ内で使う固定 ID
-        type: string
-        required: false
       name:
         description: 表示名
         type: string
@@ -48,6 +51,10 @@ on:
         description: カテゴリ（カンマ区切り）
         type: string
         required: false
+      submitter:
+        description: 登録した投稿者の GitHub ユーザー名（この人だけが掲載申請で更新できる）
+        type: string
+        required: false
 
 permissions:
   contents: write
@@ -55,7 +62,7 @@ permissions:
 
 jobs:
   register:
-    name: プラグインを登録
+    name: カタログを更新
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -65,8 +72,8 @@ jobs:
       - name: WAMカタログを取り込む
         if: inputs.operation == 'WAMカタログを同期'
         run: node scripts/catalog.mjs sync-wam
-      - name: プラグインURLを登録
-        if: inputs.operation == 'リンクを登録'
+      - name: プラグインを登録
+        if: inputs.operation == '登録'
         env:
           PLUGIN_TYPE: ${{ inputs.type }}
           PLUGIN_ID: ${{ inputs.id }}
@@ -76,16 +83,37 @@ jobs:
           PLUGIN_DESCRIPTION: ${{ inputs.description }}
           PLUGIN_WEBSITE: ${{ inputs.website }}
           PLUGIN_CATEGORIES: ${{ inputs.categories }}
+          PLUGIN_SUBMITTER: ${{ inputs.submitter }}
         run: |
-          node scripts/catalog.mjs add "$PLUGIN_TYPE" "$PLUGIN_ID" "$PLUGIN_NAME" "$PLUGIN_AUTHOR" "$PLUGIN_URL" "$PLUGIN_DESCRIPTION" "$PLUGIN_WEBSITE" "$PLUGIN_CATEGORIES"
-      - name: 登録内容のプルリクエストを作成
+          node scripts/catalog.mjs add "$PLUGIN_TYPE" "$PLUGIN_ID" "$PLUGIN_NAME" "$PLUGIN_AUTHOR" "$PLUGIN_URL" "$PLUGIN_DESCRIPTION" "$PLUGIN_WEBSITE" "$PLUGIN_CATEGORIES" "$PLUGIN_SUBMITTER"
+      - name: プラグインを更新
+        if: inputs.operation == '更新'
+        env:
+          PLUGIN_TYPE: ${{ inputs.type }}
+          PLUGIN_ID: ${{ inputs.id }}
+          PLUGIN_NAME: ${{ inputs.name }}
+          PLUGIN_AUTHOR: ${{ inputs.author }}
+          PLUGIN_URL: ${{ inputs.url }}
+          PLUGIN_DESCRIPTION: ${{ inputs.description }}
+          PLUGIN_WEBSITE: ${{ inputs.website }}
+          PLUGIN_CATEGORIES: ${{ inputs.categories }}
+          PLUGIN_SUBMITTER: ${{ inputs.submitter }}
+        # 空の項目は変えない。種類は選択式で空にできないので、更新では変えない（変えるときは削除して登録し直す）
+        run: |
+          node scripts/catalog.mjs update "$PLUGIN_ID" "name=$PLUGIN_NAME" "author=$PLUGIN_AUTHOR" "url=$PLUGIN_URL" "description=$PLUGIN_DESCRIPTION" "website=$PLUGIN_WEBSITE" "categories=$PLUGIN_CATEGORIES" "submitter=$PLUGIN_SUBMITTER"
+      - name: プラグインを削除
+        if: inputs.operation == '削除'
+        env:
+          PLUGIN_ID: ${{ inputs.id }}
+        run: node scripts/catalog.mjs remove "$PLUGIN_ID"
+      - name: 変更内容のプルリクエストを作成
         uses: peter-evans/create-pull-request@v7
         with:
           branch: plugin-registration-${{ github.run_id }}
           delete-branch: true
-          commit-message: "catalog: プラグイン登録情報を更新"
-          title: "プラグインカタログ: 登録情報を更新"
+          commit-message: "catalog: ${{ inputs.operation }}"
+          title: "プラグインカタログ: ${{ inputs.operation }}${{ inputs.id && format('（{0}）', inputs.id) || '' }}"
           body: |
-            プラグイン登録のワークフローを作成しました。
+            メンテナーが実行したワークフロー（${{ inputs.operation }}）による変更です。
 
             マージする前に、メタデータと配布元リンクを確認してください。

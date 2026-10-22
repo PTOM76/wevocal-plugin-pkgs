@@ -1,7 +1,8 @@
-import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises'
+import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-const root = resolve(import.meta.dirname, '..')
+// テストでは CATALOG_ROOT で作業用のフォルダーに向ける
+const root = process.env.CATALOG_ROOT ?? resolve(import.meta.dirname, '..')
 const pluginsDir = resolve(root, 'data/plugins')
 const indexPath = resolve(root, 'data/index.json')
 const wamIndexPath = resolve(root, 'data/wam.json')
@@ -24,6 +25,13 @@ function fileId(value) {
   const id = String(value).toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '')
   if (!/^[a-z0-9][a-z0-9._-]{1,95}$/.test(id)) throw new Error(`プラグイン ID が不正です: ${value}`)
   return id
+}
+
+// 登録した投稿者の GitHub ユーザー名。更新できるのはこの人だけ
+function githubLogin(value) {
+  const login = String(value).trim()
+  if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(login)) throw new Error(`GitHub ユーザー名が不正です: ${value}`)
+  return login
 }
 
 function normalizeEntry(raw) {
@@ -57,6 +65,7 @@ function normalizeEntry(raw) {
     keywords: Array.isArray(raw.keywords) ? raw.keywords.map(String) : [],
     installable: raw.installable !== false,
     ...(raw.source ? { source: raw.source } : {}),
+    ...(raw.submitter ? { submitter: githubLogin(raw.submitter) } : {}),
   }
 }
 
@@ -151,6 +160,60 @@ async function addEntry(input) {
   console.log(`登録しました: ${entry.id}`)
 }
 
+async function readEntry(id) {
+  try {
+    return JSON.parse(await readFile(resolve(pluginsDir, `${fileId(id)}.json`), 'utf8'))
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null
+    throw error
+  }
+}
+
+async function reportAction(action) {
+  console.log(action === 'updated' ? '更新しました' : '登録しました')
+  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `action=${action}
+`)
+}
+
+// 掲載申請。新しい ID は投稿者つきで登録し、登録済みの ID は同じ投稿者のときだけ更新する
+async function submitEntry(input, login) {
+  const submitter = githubLogin(login)
+  const entry = normalizeEntry(input)
+  const current = await readEntry(entry.id)
+  if (!current) {
+    await writeEntry({ ...entry, submitter })
+    return 'added'
+  }
+  if (!current.submitter || current.submitter.toLowerCase() !== submitter.toLowerCase()) {
+    throw new Error(`このプラグインを更新できるのは登録した投稿者だけです: ${entry.id}`)
+  }
+  const { type, name, author, url, description, website, categories } = entry
+  await writeEntry({ ...current, type, name, author, url, description, website, categories })
+  return 'updated'
+}
+
+// メンテナーの更新。key=value で渡した項目だけを書き換える（空の値は無視する）
+const editableKeys = new Set(['type', 'name', 'author', 'url', 'description', 'website', 'thumbnail', 'version', 'categories', 'submitter'])
+async function updateEntry(id, pairs) {
+  const current = await readEntry(id)
+  if (!current) throw new Error(`登録されていないプラグイン ID です: ${id}`)
+  const changes = {}
+  for (const pair of pairs) {
+    const index = pair.indexOf('=')
+    const key = pair.slice(0, index)
+    const value = pair.slice(index + 1)
+    if (index < 1 || !editableKeys.has(key)) throw new Error(`更新できない項目です: ${pair}`)
+    if (value === '') continue
+    changes[key] = key === 'categories' ? value.split(',').map((item) => item.trim()).filter(Boolean) : value
+  }
+  await writeEntry({ ...current, ...changes })
+}
+
+async function removeEntry(id) {
+  if (!(await readEntry(id))) throw new Error(`登録されていないプラグイン ID です: ${id}`)
+  await unlink(resolve(pluginsDir, `${fileId(id)}.json`))
+}
+
 async function writeIndex(path, entries) {
   let updatedAt = new Date().toISOString()
   try {
@@ -183,7 +246,7 @@ if (command === 'sync-wam') {
   await syncWam()
   await buildIndex()
 } else if (command === 'add') {
-  const [type, id, name, author, url, description = '', website = '', categories = ''] = args
+  const [type, id, name, author, url, description = '', website = '', categories = '', submitter = ''] = args
   await addEntry({
     type,
     id,
@@ -193,6 +256,7 @@ if (command === 'sync-wam') {
     description,
     website,
     categories: categories.split(',').map((value) => value.trim()).filter(Boolean),
+    ...(submitter ? { submitter } : {}),
   })
   await buildIndex()
 } else if (command === 'add-json') {
@@ -200,8 +264,25 @@ if (command === 'sync-wam') {
   if (!path) throw new Error('登録する JSON ファイルのパスが必要です')
   await addEntry(JSON.parse(await readFile(path, 'utf8')))
   await buildIndex()
+} else if (command === 'submit-json') {
+  const [path, login] = args
+  if (!path || !login) throw new Error('使い方: node scripts/catalog.mjs submit-json <JSON> <GitHub ユーザー名>')
+  await reportAction(await submitEntry(JSON.parse(await readFile(path, 'utf8')), login))
+  await buildIndex()
+} else if (command === 'update') {
+  const [id, ...pairs] = args
+  if (!id) throw new Error('使い方: node scripts/catalog.mjs update <ID> [項目=値 ...]')
+  await updateEntry(id, pairs)
+  await buildIndex()
+  console.log(`更新しました: ${id}`)
+} else if (command === 'remove') {
+  const [id] = args
+  if (!id) throw new Error('使い方: node scripts/catalog.mjs remove <ID>')
+  await removeEntry(id)
+  await buildIndex()
+  console.log(`削除しました: ${id}`)
 } else if (command === 'validate') {
   await buildIndex()
 } else {
-  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|validate>')
+  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|submit-json|update|remove|validate>')
 }

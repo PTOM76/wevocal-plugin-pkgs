@@ -120,7 +120,7 @@ export const REPLY_TEXT = {
   ja: {
     received: (marker) => `${marker}\n投稿を受け付けました。内容を検証して、レビュー用のプルリクエストを作成します。\n\n**任意でChreeIDと連携する場合**は、このIssueに投稿者本人が \`/link-chreeid\` とコメントしてください。返信される認証リンクを開いてChreeIDにログインし、画面に表示された \`/chreeid-proof ...\` コマンドを同じIssueへコメントすると連携完了です。認証後、このサイトにログインすると連携済みの申請を一覧できます。\n\n連携は任意です。申請や審査には影響しません。`,
     pullRequest: (number) => `レビュー用の PR #${number} を作成しました。確認後にメンテナーがマージします。`,
-    failed: '投稿を自動処理できませんでした。入力内容を確認するか、メンテナーに連絡してください。',
+    failed: '投稿を自動処理できませんでした。入力内容を確認するか、メンテナーに連絡してください。登録済みの ID を更新できるのは、最初に登録した投稿者だけです。',
     linkStart: (url) => `[ChreeID連携を開始する](${url})\n\n認証後、画面のコマンドをこのIssueにコメントしてください。`,
     alreadyLinked: 'このIssueはすでにChreeID連携済みです。',
     linked: (sub, login) => `ChreeIDアカウントとの連携を確認しました。\n\n- ChreeID sub: \`${sub}\`\n- GitHub投稿者: @${login}`,
@@ -129,7 +129,7 @@ export const REPLY_TEXT = {
   en: {
     received: (marker) => `${marker}\nYour submission has been received. We will validate it and create a pull request for review.\n\n**To optionally link your ChreeID**, the submitter comments \`/link-chreeid\` on this issue. Open the authentication link in the reply, sign in to ChreeID, then comment the \`/chreeid-proof ...\` command shown on the page on the same issue to finish linking. After that, signing in to the site lists your linked submissions.\n\nLinking is optional and does not affect the submission or its review.`,
     pullRequest: (number) => `Created PR #${number} for review. A maintainer will merge it after checking.`,
-    failed: 'The submission could not be processed automatically. Please check your input or contact a maintainer.',
+    failed: 'The submission could not be processed automatically. Please check your input or contact a maintainer. Only the original submitter can update an ID that is already registered.',
     linkStart: (url) => `[Start ChreeID linking](${url})\n\nAfter authenticating, comment the command shown on the page on this issue.`,
     alreadyLinked: 'This issue is already linked to a ChreeID account.',
     linked: (sub, login) => `The link to the ChreeID account has been confirmed.\n\n- ChreeID sub: \`${sub}\`\n- GitHub submitter: @${login}`,
@@ -138,7 +138,7 @@ export const REPLY_TEXT = {
   ko: {
     received: (marker) => `${marker}\n제출을 접수했습니다. 내용을 검증한 뒤 검토용 풀 리퀘스트를 만듭니다.\n\n**선택적으로 ChreeID와 연동하려면** 제출자 본인이 이 Issue에 \`/link-chreeid\`라고 댓글을 남기세요. 답글로 받은 인증 링크를 열어 ChreeID에 로그인하고, 화면에 표시된 \`/chreeid-proof ...\` 명령을 같은 Issue에 댓글로 남기면 연동이 완료됩니다. 인증 후 이 사이트에 로그인하면 연동된 신청을 목록으로 볼 수 있습니다.\n\n연동은 선택 사항이며 신청과 심사에 영향을 주지 않습니다.`,
     pullRequest: (number) => `검토용 PR #${number}을(를) 만들었습니다. 확인 후 메인테이너가 병합합니다.`,
-    failed: '제출을 자동으로 처리하지 못했습니다. 입력 내용을 확인하거나 메인테이너에게 문의하세요.',
+    failed: '제출을 자동으로 처리하지 못했습니다. 입력 내용을 확인하거나 메인테이너에게 문의하세요. 이미 등록된 ID는 처음 등록한 제출자만 업데이트할 수 있습니다.',
     linkStart: (url) => `[ChreeID 연동 시작](${url})\n\n인증 후 화면에 표시된 명령을 이 Issue에 댓글로 남기세요.`,
     alreadyLinked: '이 Issue는 이미 ChreeID와 연동되어 있습니다.',
     linked: (sub, login) => `ChreeID 계정과의 연동을 확인했습니다.\n\n- ChreeID sub: \`${sub}\`\n- GitHub 제출자: @${login}`,
@@ -147,7 +147,7 @@ export const REPLY_TEXT = {
   zh_cn: {
     received: (marker) => `${marker}\n已收到提交。我们将验证内容并创建用于审核的拉取请求。\n\n**如需选择性关联 ChreeID**，请由提交者本人在此 Issue 中评论 \`/link-chreeid\`。打开回复中的认证链接并登录 ChreeID，再将页面上显示的 \`/chreeid-proof ...\` 命令评论到同一个 Issue，即可完成关联。认证后登录本网站，可以查看已关联的申请。\n\n关联是可选的，不影响申请和审核。`,
     pullRequest: (number) => `已创建用于审核的 PR #${number}。确认后由维护者合并。`,
-    failed: '无法自动处理此提交。请检查输入内容，或联系维护者。',
+    failed: '无法自动处理此提交。请检查输入内容，或联系维护者。已登记的 ID 只有最初的提交者才能更新。',
     linkStart: (url) => `[开始关联 ChreeID](${url})\n\n认证后，请将页面上显示的命令评论到此 Issue。`,
     alreadyLinked: '此 Issue 已关联 ChreeID。',
     linked: (sub, login) => `已确认与 ChreeID 账号的关联。\n\n- ChreeID sub: \`${sub}\`\n- GitHub 提交者: @${login}`,
@@ -156,7 +156,7 @@ export const REPLY_TEXT = {
   zh_tw: {
     received: (marker) => `${marker}\n已收到提交。我們將驗證內容並建立供審查的 Pull Request。\n\n**若要選擇性連結 ChreeID**，請由提交者本人在此 Issue 留言 \`/link-chreeid\`。開啟回覆中的驗證連結並登入 ChreeID，再將畫面上顯示的 \`/chreeid-proof ...\` 指令留言到同一個 Issue，即完成連結。驗證後登入本網站，即可查看已連結的申請。\n\n連結為選填，不影響申請與審查。`,
     pullRequest: (number) => `已建立供審查的 PR #${number}。確認後由維護者合併。`,
-    failed: '無法自動處理此提交。請檢查輸入內容，或聯絡維護者。',
+    failed: '無法自動處理此提交。請檢查輸入內容，或聯絡維護者。已登錄的 ID 只有最初的提交者才能更新。',
     linkStart: (url) => `[開始連結 ChreeID](${url})\n\n驗證後，請將畫面上顯示的指令留言到此 Issue。`,
     alreadyLinked: '此 Issue 已連結 ChreeID。',
     linked: (sub, login) => `已確認與 ChreeID 帳號的連結。\n\n- ChreeID sub: \`${sub}\`\n- GitHub 提交者: @${login}`,

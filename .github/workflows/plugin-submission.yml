@@ -48,16 +48,19 @@ jobs:
           node-version: 22
       - name: 投稿内容を解析
         run: node scripts/issue-submission.mjs "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/plugin-submission.json"
-      - name: メタデータを検証してカタログへ追加
-        run: node scripts/catalog.mjs add-json "$RUNNER_TEMP/plugin-submission.json"
+      - name: メタデータを検証してカタログへ追加または更新
+        id: catalog
+        env:
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+        run: node scripts/catalog.mjs submit-json "$RUNNER_TEMP/plugin-submission.json" "$ISSUE_USER"
       - name: レビュー用プルリクエストを作成
         id: pull-request
         uses: peter-evans/create-pull-request@v7
         with:
           branch: plugin-submission-${{ github.event.issue.number }}
           delete-branch: true
-          commit-message: "catalog: プラグイン登録情報を追加"
-          title: "プラグインカタログ: 登録提案 #${{ github.event.issue.number }}"
+          commit-message: "catalog: プラグイン登録情報を${{ steps.catalog.outputs.action == 'updated' && '更新' || '追加' }}"
+          title: "プラグインカタログ: ${{ steps.catalog.outputs.action == 'updated' && '更新提案' || '登録提案' }} #${{ github.event.issue.number }}"
           body: |
             **GitHub Issue Form** から送信された登録提案です。
 

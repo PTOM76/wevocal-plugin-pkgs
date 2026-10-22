@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-22T05:12:02.554Z",
+  "updatedAt": "2026-10-22T05:32:43.453Z",
   "plugins": [
     {
       "id": "com.sequencerparty.audioinput",
@@ -1501,7 +1501,7 @@
       "sourceId": "net.pitan76.formantdrift",
       "name": "Formant Drift",
       "author": "PTOM76",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "description": "Three formant-like peaks that slowly and randomly wander over time, so a voice keeps changing its vowel color.",
       "type": "wam",
       "url": "https://ptom76.github.io/wam-formantdrift/index.js",

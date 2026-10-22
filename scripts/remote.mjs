@@ -122,7 +122,8 @@ export async function completeSubmission(input, current = null) {
   if (!type) throw new Error('配布 URL の拡張子（.js、.json、.dll）から種別を決められません。種別を入力してください')
   const meta = (await readMetadata(type, url)) ?? {}
   const pick = (key, empty = '') => input[key] || meta[key] || current?.[key] || empty
-  const categories = input.categories?.length ? input.categories : meta.categories?.length ? meta.categories : (current?.categories ?? [])
+  // カテゴリは、入力 > 今のエントリー > 配布元から推測した値（WAM は Effect か Instrument だけ）の順。更新で、手で付けたカテゴリが消えないようにする
+  const categories = input.categories?.length ? input.categories : current?.categories?.length ? current.categories : (meta.categories ?? [])
   return {
     ...(current ?? {}),
     type,

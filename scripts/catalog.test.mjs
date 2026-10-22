@@ -229,3 +229,12 @@ test('a submission that cannot be completed is rejected', async () => {
     assert.notEqual((await submit({ ...onlyUrl, url: 'https://example.com/plugin.bin' }, 'alice')).status, 0)
   })
 })
+
+test('an update keeps the categories that were set before', async () => {
+  await withCatalog(async ({ submit, read, remote }) => {
+    remote[descriptorUrl] = descriptor
+    await submit({ ...onlyUrl, categories: ['Effect', 'Reverb'] }, 'alice')
+    await submit(onlyUrl, 'alice')
+    assert.deepEqual((await read()).categories, ['Effect', 'Reverb'])
+  })
+})

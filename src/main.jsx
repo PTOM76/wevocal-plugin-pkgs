@@ -4,12 +4,15 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   InputAdornment,
   Stack,
   TextField,
   Typography,
 } from '@mui/material'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { isAbort } from './abort.js'
 import AppShell from './AppShell.jsx'
 import ChreeidLinkPanel from './ChreeidLinkPanel.jsx'
@@ -30,6 +33,7 @@ function App() {
   useLang()
   const [entries, setEntries] = useState([])
   const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('')
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [account, setAccount] = useState(getChreeidAccount)
@@ -93,14 +97,15 @@ function App() {
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase()
-    if (!normalized) return entries
-    return entries.filter((entry) =>
+    const tagged = category ? entries.filter((entry) => entry.categories.includes(category)) : entries
+    if (!normalized) return tagged
+    return tagged.filter((entry) =>
       [entry.name, entry.author, entry.description, ...entry.categories, ...entry.keywords]
         .join(' ')
         .toLocaleLowerCase()
         .includes(normalized),
     )
-  }, [entries, query])
+  }, [entries, query, category])
 
   return (
     <AppShell page="catalog" account={account} onLogin={login} onLogout={logout}>
@@ -126,6 +131,16 @@ function App() {
           },
         }}
       />
+
+      {category && (
+        <Chip
+          color="primary"
+          label={category}
+          onDelete={() => setCategory('')}
+          deleteIcon={<FontAwesomeIcon icon={faXmark} aria-label={t('catalog.clear_tag')} />}
+          sx={{ mb: 1 }}
+        />
+      )}
 
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
@@ -164,7 +179,7 @@ function App() {
             gap: 2,
           }}
         >
-          {filtered.map((entry) => <PluginCard key={entry.id} entry={entry} />)}
+          {filtered.map((entry) => <PluginCard key={entry.id} entry={entry} activeCategory={category} onCategory={setCategory} />)}
         </Box>
       )}
     </AppShell>

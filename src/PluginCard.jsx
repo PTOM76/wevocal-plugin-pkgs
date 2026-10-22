@@ -11,7 +11,7 @@ function safeUrl(value) {
   }
 }
 
-export default function PluginCard({ entry }) {
+export default function PluginCard({ entry, activeCategory, onCategory }) {
   useLang()
   const thumbnail = safeUrl(entry.thumbnail)
   const pluginUrl = safeUrl(entry.url)
@@ -45,7 +45,13 @@ export default function PluginCard({ entry }) {
         {!!entry.categories.length && (
           <Stack direction="row" spacing={0.75} useFlexGap sx={{ mt: 2, flexWrap: 'wrap' }}>
             {entry.categories.map((category) => (
-              <Chip key={category} size="small" label={category} />
+              <Chip
+                key={category}
+                size="small"
+                label={category}
+                color={category === activeCategory ? 'primary' : 'default'}
+                onClick={() => onCategory(category === activeCategory ? '' : category)}
+              />
             ))}
           </Stack>
         )}

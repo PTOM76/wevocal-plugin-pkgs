@@ -4,13 +4,18 @@ import {
   Box,
   Button,
   Container,
+  IconButton,
   Link,
   MenuItem,
   Stack,
   TextField,
   Toolbar,
   Typography,
+  alpha,
 } from '@mui/material'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
+import { toggleColorMode, useColorMode } from './colorMode.js'
 import { setLang, t, useLang } from './i18n.js'
 import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
 
@@ -25,6 +30,7 @@ export const mypagePath = `${base}mypage/`
 export default function AppShell({ page, account, onLogin, onLogout, children }) {
   const lang = useLang()
   const onMypage = page === 'mypage'
+  const dark = useColorMode() === 'dark'
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -34,7 +40,7 @@ export default function AppShell({ page, account, onLogin, onLogout, children })
         elevation={0}
         sx={{
           py: 1,
-          bgcolor: 'rgba(255, 255, 255, 0.82)',
+          bgcolor: (theme) => alpha(theme.palette.background.paper, 0.82),
           backdropFilter: 'blur(8px)',
           borderBottom: 1,
           borderColor: 'divider',
@@ -48,7 +54,15 @@ export default function AppShell({ page, account, onLogin, onLogout, children })
               noWrap
               sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
             >
-              <Link href={catalogPath} color="inherit" underline="none">WeVocal Plugin Packages</Link>
+              <Link
+                href={catalogPath}
+                color="inherit"
+                underline="none"
+                sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}
+              >
+                <Box component="img" src={`${base}favicon.svg`} alt="" sx={{ width: 28, height: 28, flexShrink: 0 }} />
+                <span>WeVocal Plugin Packages</span>
+              </Link>
             </Typography>
             <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} sx={{ flexShrink: 0 }}>
               <TextField
@@ -64,6 +78,15 @@ export default function AppShell({ page, account, onLogin, onLogout, children })
               >
                 {LANGS.map((code) => <MenuItem key={code} value={code}>{LANG_NAMES[code]}</MenuItem>)}
               </TextField>
+              <IconButton
+                onClick={toggleColorMode}
+                size="small"
+                aria-label={t(dark ? 'header.light_mode' : 'header.dark_mode')}
+                title={t(dark ? 'header.light_mode' : 'header.dark_mode')}
+                sx={{ width: 32, height: 32, borderRadius: 1.5 }}
+              >
+                <FontAwesomeIcon icon={dark ? faSun : faMoon} fixedWidth />
+              </IconButton>
               {account ? (
                 <>
                   <Button

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   Alert,
-  AppBar,
   Box,
   Button,
   Card,
@@ -11,18 +10,14 @@ import {
   CardMedia,
   Chip,
   CircularProgress,
-  Container,
   CssBaseline,
   InputAdornment,
-  Link,
-  MenuItem,
   Stack,
   TextField,
   ThemeProvider,
-  Toolbar,
   Typography,
-  createTheme,
 } from '@mui/material'
+import AppShell from './AppShell.jsx'
 import ChreeidLinkPanel from './ChreeidLinkPanel.jsx'
 import {
   beginChreeidAccountLogin,
@@ -31,61 +26,10 @@ import {
   isChreeidAccountCallback,
   logoutChreeidAccount,
 } from './chreeid.js'
-import { fetchChreeidSubmissions } from './chreeidSubmissions.js'
-import { errorText, initLang, setLang, t, useLang } from './i18n.js'
-import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
+import { errorText, initLang, t, useLang } from './i18n.js'
+import { theme } from './theme.js'
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
-const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
-const submissionsHash = '#/submissions'
-const submissionUrl = (lang) => `${sourceUrl}/issues/new?template=${templateFile(lang)}`
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: { main: '#2563eb', dark: '#1d4ed8', light: '#3b82f6', contrastText: '#ffffff' },
-    text: { primary: '#1f2937', secondary: '#6b7280', disabled: '#9ca3af' },
-    success: { main: '#059669' },
-    warning: { main: '#d97706' },
-    error: { main: '#dc2626' },
-    background: { default: '#f9fafb', paper: '#ffffff' },
-    divider: '#e5e7eb',
-  },
-  shape: { borderRadius: 6 },
-  typography: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif',
-    button: { textTransform: 'none', fontWeight: 600 },
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        html: { colorScheme: 'light' },
-        body: { backgroundColor: '#f9fafb' },
-      },
-    },
-    MuiButton: {
-      defaultProps: { disableElevation: true },
-      styleOverrides: {
-        root: { transition: 'background-color 0.2s, border-color 0.2s, color 0.2s' },
-        sizeSmall: { height: 32, padding: '0 12px', fontSize: '0.8125rem' },
-        sizeMedium: { height: 40, padding: '0 16px', fontSize: '0.875rem' },
-        outlined: { borderColor: '#d1d5db' },
-      },
-    },
-    MuiPaper: {
-      defaultProps: { elevation: 0 },
-      styleOverrides: { root: { backgroundImage: 'none' } },
-    },
-    MuiTextField: { defaultProps: { size: 'small', fullWidth: true } },
-    MuiChip: {
-      styleOverrides: {
-        root: { fontWeight: 600 },
-        sizeSmall: { height: 20, fontSize: '0.75rem' },
-      },
-    },
-    MuiLink: { defaultProps: { underline: 'hover' } },
-  },
-})
 
 function safeUrl(value) {
   try {
@@ -154,27 +98,15 @@ function PluginCard({ entry }) {
   )
 }
 
+
 function App() {
-  const lang = useLang()
+  useLang()
   const [entries, setEntries] = useState([])
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [account, setAccount] = useState(getChreeidAccount)
   const [accountError, setAccountError] = useState('')
-  const [submissions, setSubmissions] = useState([])
-  const [submissionsStatus, setSubmissionsStatus] = useState('idle')
-  const [hash, setHash] = useState(window.location.hash)
-  const showSubmissions = !!account && hash === submissionsHash
-
-  useEffect(() => {
-    const onHashChange = () => {
-      setHash(window.location.hash)
-      window.scrollTo(0, 0)
-    }
-    window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
-  }, [])
 
   useEffect(() => {
     const callbackSearch = window.location.search
@@ -219,28 +151,6 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  useEffect(() => {
-    if (!account) {
-      setSubmissions([])
-      setSubmissionsStatus('idle')
-      return undefined
-    }
-
-    const controller = new AbortController()
-    setSubmissionsStatus('loading')
-    fetchChreeidSubmissions(account.sub, { signal: controller.signal })
-      .then((items) => {
-        setSubmissions(items)
-        setSubmissionsStatus('ready')
-      })
-      .catch((reason) => {
-        if (reason instanceof DOMException && reason.name === 'AbortError') return
-        setAccountError(errorText(reason))
-        setSubmissionsStatus('error')
-      })
-    return () => controller.abort()
-  }, [account])
-
   const login = () => {
     setAccountError('')
     beginChreeidAccountLogin().catch((reason) => {
@@ -266,193 +176,71 @@ function App() {
   }, [entries, query])
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar
-        position="sticky"
-        color="default"
-        elevation={0}
+    <AppShell page="catalog" account={account} onLogin={login} onLogout={logout}>
+      <ChreeidLinkPanel />
+      {accountError && <Alert severity="error" sx={{ mb: 2 }}>{accountError}</Alert>}
+      <TextField
+        fullWidth
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder={t('catalog.search_placeholder')}
+        sx={{ mb: 2 }}
+        slotProps={{
+          htmlInput: { 'aria-label': t('catalog.search_aria') },
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+              <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" sx={{ width: 20, height: 20, fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="m16 16 4 4" />
+              </Box>
+              </InputAdornment>
+            ),
+          },
+        }}
+      />
+
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1.5}
         sx={{
-          py: 1,
-          bgcolor: 'rgba(255, 255, 255, 0.82)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: 1,
-          borderColor: 'divider',
+          my: 2.5,
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          justifyContent: 'space-between',
         }}
       >
-      <Container maxWidth="md">
-        <Toolbar disableGutters sx={{ minHeight: '40px !important' }}>
-          <Typography
-            variant="h6"
-            component="div"
-            noWrap
-            sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
-          >
-            <Link href="#/" color="inherit" underline="none">WeVocal Plugin Packages</Link>
-          </Typography>
-          <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} sx={{ flexShrink: 0 }}>
-            <TextField
-              select
-              value={lang}
-              onChange={(event) => setLang(event.target.value)}
-              sx={{
-                width: { xs: 96, sm: 112 },
-                '& .MuiInputBase-root': { height: 32, fontSize: '0.8125rem' },
-                '& .MuiSelect-select': { py: 0, pl: 1.5, display: 'flex', alignItems: 'center', minHeight: '0 !important' },
-              }}
-              slotProps={{ htmlInput: { 'aria-label': t('header.language') } }}
-            >
-              {LANGS.map((code) => <MenuItem key={code} value={code}>{LANG_NAMES[code]}</MenuItem>)}
-            </TextField>
-            {account && (
-              <Button component="a" href={showSubmissions ? '#/' : submissionsHash} size="small">
-                {showSubmissions ? t('nav.catalog') : t('nav.mypage')}
-              </Button>
-            )}
-            {account ? (
-              <Button onClick={logout} size="small">{t('header.logout')}</Button>
-            ) : (
-              <Button onClick={login} variant="outlined" size="small" aria-label={t('header.login_aria')}>
-                {t('header.login')}
-              </Button>
-            )}
-            <Button
-              component="a"
-              href={submissionUrl(lang)}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="contained"
-              size="small"
-            >
-              {t('header.submit')}
-            </Button>
-          </Stack>
-          </Toolbar>
-        </Container>
-      </AppBar>
+        <Typography role="status" color="text.secondary">
+          {status === 'loading' && t('catalog.loading')}
+          {status === 'ready' && t('catalog.count', { total: entries.length, shown: filtered.length })}
+          {status === 'error' && t('catalog.failed')}
+        </Typography>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+          <Button component="a" href={`${import.meta.env.BASE_URL}data/index.json`} size="small">
+            {t('catalog.json')}
+          </Button>
+          <Button component="a" href={`${import.meta.env.BASE_URL}data/wam.json`} size="small">
+            {t('catalog.json_wam')}
+          </Button>
+        </Stack>
+      </Stack>
 
-      <Container component="main" maxWidth="md" sx={{ flexGrow: 1, pt: 3, pb: 8 }}>
-        <ChreeidLinkPanel />
-        {accountError && <Alert severity="error" sx={{ mb: 2 }}>{accountError}</Alert>}
-        {showSubmissions && (
-          <Box component="section" aria-labelledby="my-submissions-heading" sx={{ mb: 3 }}>
-            <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ mb: 0.5 }}>
-              {t('submissions.title')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-              {t('submissions.note')}
-            </Typography>
-            {submissionsStatus === 'loading' && <CircularProgress aria-label={t('submissions.loading')} size={24} />}
-            {submissionsStatus === 'error' && <Alert severity="error">{t('submissions.failed')}</Alert>}
-            {submissionsStatus === 'ready' && submissions.length === 0 && (
-              <Alert severity="info">
-                {t('submissions.empty').split('{command}').flatMap((part, index) => (
-                  index === 0 ? [part] : [<code key={index}>/link-chreeid</code>, part]
-                ))}
-              </Alert>
-            )}
-            {submissionsStatus === 'ready' && submissions.length > 0 && (
-              <Stack spacing={1}>
-                {submissions.map((submission) => (
-                  <Card key={submission.number} variant="outlined">
-                    <CardContent sx={{ pb: 1 }}>
-                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
-                        <Typography component="h3" variant="subtitle1" sx={{ flexGrow: 1 }}>
-                          {submission.title} #{submission.number}
-                        </Typography>
-                        <Chip size="small" label={submission.state === 'open' ? t('submissions.open') : t('submissions.closed')} />
-                      </Stack>
-                      <Typography variant="body2" color="text.secondary">
-                        {new Intl.DateTimeFormat(lang.replace('_', '-'), { dateStyle: 'medium' }).format(new Date(submission.createdAt))}
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ px: 2, pt: 0 }}>
-                      <Button component="a" href={submission.url} target="_blank" rel="noopener noreferrer" size="small">
-                        {t('submissions.view')}
-                      </Button>
-                    </CardActions>
-                  </Card>
-                ))}
-              </Stack>
-            )}
-          </Box>
-        )}
-        {!showSubmissions && (
-          <>
-        <TextField
-          fullWidth
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t('catalog.search_placeholder')}
-          sx={{ mb: 2 }}
-          slotProps={{
-            htmlInput: { 'aria-label': t('catalog.search_aria') },
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" sx={{ width: 20, height: 20, fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
-                  <circle cx="10.5" cy="10.5" r="6.5" />
-                  <path d="m16 16 4 4" />
-                </Box>
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={1.5}
+      {status === 'loading' && <CircularProgress aria-label={t('catalog.loading_aria')} />}
+      {status === 'error' && <Alert severity="error">{error}</Alert>}
+      {status === 'ready' && filtered.length === 0 && (
+        <Alert severity="info">{t('catalog.empty')}</Alert>
+      )}
+      {status === 'ready' && filtered.length > 0 && (
+        <Box
           sx={{
-            my: 2.5,
-            alignItems: { xs: 'flex-start', sm: 'center' },
-            justifyContent: 'space-between',
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' },
+            gap: 2,
           }}
         >
-          <Typography role="status" color="text.secondary">
-            {status === 'loading' && t('catalog.loading')}
-            {status === 'ready' && t('catalog.count', { total: entries.length, shown: filtered.length })}
-            {status === 'error' && t('catalog.failed')}
-          </Typography>
-          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
-            <Button component="a" href={`${import.meta.env.BASE_URL}data/index.json`} size="small">
-              {t('catalog.json')}
-            </Button>
-            <Button component="a" href={`${import.meta.env.BASE_URL}data/wam.json`} size="small">
-              {t('catalog.json_wam')}
-            </Button>
-          </Stack>
-        </Stack>
-
-        {status === 'loading' && <CircularProgress aria-label={t('catalog.loading_aria')} />}
-        {status === 'error' && <Alert severity="error">{error}</Alert>}
-        {status === 'ready' && filtered.length === 0 && (
-          <Alert severity="info">{t('catalog.empty')}</Alert>
-        )}
-        {status === 'ready' && filtered.length > 0 && (
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' },
-              gap: 2,
-            }}
-          >
-            {filtered.map((entry) => <PluginCard key={entry.id} entry={entry} />)}
-          </Box>
-        )}
-          </>
-        )}
-      </Container>
-
-      <Box component="footer" sx={{ borderTop: 1, borderColor: 'divider', py: 2 }}>
-        <Container maxWidth="md">
-          <Typography variant="body2" color="text.secondary">
-            <Link href={sourceUrl} color="inherit" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </Link>
-          </Typography>
-        </Container>
-      </Box>
-    </Box>
+          {filtered.map((entry) => <PluginCard key={entry.id} entry={entry} />)}
+        </Box>
+      )}
+    </AppShell>
   )
 }
 

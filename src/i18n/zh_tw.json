@@ -28,6 +28,7 @@
   "plugins.title": "我的外掛",
   "plugins.note": "正在顯示以你的 GitHub 帳號登錄的外掛。",
   "plugins.empty": "沒有已登錄的外掛。",
+  "plugins.withdraw": "申請下架",
   "plugins.update": "申請更新",
   "submissions.title": "我的登錄申請",
   "submissions.note": "正在顯示已連結 ChreeID 的公開 GitHub 申請。",

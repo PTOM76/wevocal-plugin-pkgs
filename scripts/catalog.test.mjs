@@ -84,3 +84,21 @@ test('maintainers can set the submitter, update fields and remove an entry', asy
     assert.equal(JSON.parse(await readFile(join(root, 'data/index.json'), 'utf8')).plugins.length, 0)
   })
 })
+
+test('only the submitter can withdraw an entry', async () => {
+  await withCatalog(async ({ submit, catalog, read }) => {
+    await submit(submission, 'alice')
+    assert.notEqual(catalog('withdraw', submission.id, 'mallory').status, 0)
+    assert.equal((await read()).id, submission.id)
+    assert.equal(catalog('withdraw', submission.id, 'ALICE').status, 0)
+    await assert.rejects(read())
+  })
+})
+
+test('an entry without a submitter cannot be withdrawn by a user', async () => {
+  await withCatalog(async ({ catalog, read }) => {
+    catalog('add', 'wam', submission.id, submission.name, submission.author, submission.url)
+    assert.notEqual(catalog('withdraw', submission.id, 'mallory').status, 0)
+    assert.equal((await read()).id, submission.id)
+  })
+})

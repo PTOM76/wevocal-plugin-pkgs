@@ -1,0 +1,26 @@
+# 登録したプラグインの取り下げを受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "Plugin removal"
+description: "Request to withdraw a plugin you registered"
+title: "[Plugin removal]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit this with the GitHub account that first registered the plugin. Requests from other accounts are not processed.
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "The ID of the plugin to withdraw, as listed in the catalog."
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: reason
+    attributes:
+      label: "Reason (optional)"
+    validations:
+      required: false
+      max-length: 500

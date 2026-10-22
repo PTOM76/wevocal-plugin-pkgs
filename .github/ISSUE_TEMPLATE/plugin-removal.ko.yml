@@ -1,0 +1,26 @@
+# 登録したプラグインの取り下げを受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "플러그인 삭제"
+description: "등록한 플러그인의 게재 삭제를 신청"
+title: "[플러그인 삭제]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        플러그인을 처음 등록한 GitHub 계정으로 제출하세요. 다른 계정의 신청은 처리되지 않습니다.
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "삭제할 플러그인의 ID (카탈로그에 올라 있는 것)."
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: reason
+    attributes:
+      label: "이유 (선택)"
+    validations:
+      required: false
+      max-length: 500

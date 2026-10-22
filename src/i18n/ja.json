@@ -28,6 +28,7 @@
   "plugins.title": "自分のプラグイン",
   "plugins.note": "登録した投稿者として記録されているプラグインを表示しています。",
   "plugins.empty": "登録済みのプラグインはありません。",
+  "plugins.withdraw": "取り下げを申請",
   "plugins.update": "更新を申請",
   "submissions.title": "自分の登録申請",
   "submissions.note": "ChreeID連携済みの公開GitHub申請を表示しています。",

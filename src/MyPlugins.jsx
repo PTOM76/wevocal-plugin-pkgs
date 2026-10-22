@@ -1,7 +1,7 @@
 // マイページの「自分のプラグイン」。連携済みの申請の投稿者が登録したプラグインを一覧し、更新の申請を開く。
 import { useEffect, useState } from 'react'
 import { Alert, Box, Button, Card, CardActions, CardContent, Chip, Stack, Typography } from '@mui/material'
-import { submissionUrl } from './AppShell.jsx'
+import { removalUrl, submissionUrl } from './AppShell.jsx'
 import { isAbort } from './abort.js'
 import { t, useLang } from './i18n.js'
 
@@ -59,6 +59,9 @@ export default function MyPlugins({ logins }) {
             <CardActions sx={{ px: 2, pt: 0 }}>
               <Button component="a" href={updateUrl(lang, entry)} target="_blank" rel="noopener noreferrer" size="small">
                 {t('plugins.update')}
+              </Button>
+              <Button component="a" href={removalUrl(lang, entry.id)} target="_blank" rel="noopener noreferrer" size="small" color="error">
+                {t('plugins.withdraw')}
               </Button>
             </CardActions>
           </Card>

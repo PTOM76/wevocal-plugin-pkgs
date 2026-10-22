@@ -1,0 +1,26 @@
+# 登録したプラグインの取り下げを受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "插件撤下"
+description: "申请撤下已登记的插件"
+title: "[插件撤下]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请使用最初登记该插件的 GitHub 账号提交。其他账号的申请不会被处理。
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "要撤下的插件 ID（目录中列出的 ID）。"
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: reason
+    attributes:
+      label: "原因（可选）"
+    validations:
+      required: false
+      max-length: 500

@@ -209,6 +209,17 @@ async function updateEntry(id, pairs) {
   await writeEntry({ ...current, ...changes })
 }
 
+// 投稿者本人による取り下げ。登録した投稿者と同じ GitHub ユーザーのときだけ消す
+async function withdrawEntry(id, login) {
+  const submitter = githubLogin(login)
+  const current = await readEntry(id)
+  if (!current) throw new Error(`登録されていないプラグイン ID です: ${id}`)
+  if (!current.submitter || current.submitter.toLowerCase() !== submitter.toLowerCase()) {
+    throw new Error(`このプラグインを取り下げられるのは登録した投稿者だけです: ${id}`)
+  }
+  await removeEntry(id)
+}
+
 async function removeEntry(id) {
   if (!(await readEntry(id))) throw new Error(`登録されていないプラグイン ID です: ${id}`)
   await unlink(resolve(pluginsDir, `${fileId(id)}.json`))
@@ -281,8 +292,14 @@ if (command === 'sync-wam') {
   await removeEntry(id)
   await buildIndex()
   console.log(`削除しました: ${id}`)
+} else if (command === 'withdraw') {
+  const [id, login] = args
+  if (!id || !login) throw new Error('使い方: node scripts/catalog.mjs withdraw <ID> <GitHub ユーザー名>')
+  await withdrawEntry(id, login)
+  await buildIndex()
+  console.log(`取り下げました: ${id}`)
 } else if (command === 'validate') {
   await buildIndex()
 } else {
-  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|submit-json|update|remove|validate>')
+  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|submit-json|update|remove|withdraw|validate>')
 }

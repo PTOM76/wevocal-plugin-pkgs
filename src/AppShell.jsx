@@ -17,10 +17,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
 import { toggleColorMode, useColorMode } from './colorMode.js'
 import { setLang, t, useLang } from './i18n.js'
+import { removalTemplateFile } from '../scripts/removal-i18n.mjs'
 import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
 
 const base = import.meta.env.BASE_URL
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
+// 取り下げの申請フォーム。ID を入れた状態で開く
+export const removalUrl = (lang, id) => {
+  const url = new URL(`${sourceUrl}/issues/new`)
+  url.searchParams.set('template', removalTemplateFile(lang))
+  url.searchParams.set('id', id)
+  return url.href
+}
+
 // prefill は、Issue Form の項目（type、id、name など）の初期値
 export const submissionUrl = (lang, prefill = {}) => {
   const url = new URL(`${sourceUrl}/issues/new`)

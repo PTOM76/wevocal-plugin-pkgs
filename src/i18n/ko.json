@@ -28,6 +28,7 @@
   "plugins.title": "내 플러그인",
   "plugins.note": "내 GitHub 계정으로 등록된 플러그인을 표시하고 있습니다.",
   "plugins.empty": "등록된 플러그인이 없습니다.",
+  "plugins.withdraw": "삭제 신청",
   "plugins.update": "업데이트 신청",
   "submissions.title": "내 등록 신청",
   "submissions.note": "ChreeID와 연동된 공개 GitHub 신청을 표시하고 있습니다.",

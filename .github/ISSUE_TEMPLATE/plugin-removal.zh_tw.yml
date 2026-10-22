@@ -1,0 +1,26 @@
+# 登録したプラグインの取り下げを受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "外掛下架"
+description: "申請下架已登錄的外掛"
+title: "[外掛下架]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請使用最初登錄該外掛的 GitHub 帳號提交。其他帳號的申請不會被處理。
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "要下架的外掛 ID（目錄中列出的 ID）。"
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: reason
+    attributes:
+      label: "原因（選填）"
+    validations:
+      required: false
+      max-length: 500

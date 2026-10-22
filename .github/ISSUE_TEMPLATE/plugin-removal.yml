@@ -1,0 +1,26 @@
+# 登録したプラグインの取り下げを受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "プラグイン取り下げ"
+description: "登録したプラグインの掲載の取り下げを申請"
+title: "[プラグイン取り下げ]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        掲載を取り下げるには、そのプラグインを最初に登録した GitHub アカウントで投稿してください。別のアカウントの申請は処理されません。
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "取り下げるプラグインの ID（カタログに載っているもの）。"
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: reason
+    attributes:
+      label: "理由（任意）"
+    validations:
+      required: false
+      max-length: 500

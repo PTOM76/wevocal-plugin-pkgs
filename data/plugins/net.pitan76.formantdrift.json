@@ -8,7 +8,7 @@
   "type": "wam",
   "url": "https://ptom76.github.io/wam-formantdrift/index.js",
   "website": "https://github.com/PTOM76/wam-formantdrift",
-  "thumbnail": "",
+  "thumbnail": "https://ptom76.github.io/wam-formantdrift/screenshot.png",
   "categories": [
     "Effect",
     "Filter"

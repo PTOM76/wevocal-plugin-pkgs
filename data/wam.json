@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-22T04:53:59.577Z",
+  "updatedAt": "2026-10-22T05:04:36.079Z",
   "plugins": [
     {
       "id": "com.sequencerparty.audioinput",
@@ -1506,7 +1506,7 @@
       "type": "wam",
       "url": "https://ptom76.github.io/wam-formantdrift/index.js",
       "website": "https://github.com/PTOM76/wam-formantdrift",
-      "thumbnail": "",
+      "thumbnail": "https://ptom76.github.io/wam-formantdrift/screenshot.png",
       "categories": [
         "Effect",
         "Filter"

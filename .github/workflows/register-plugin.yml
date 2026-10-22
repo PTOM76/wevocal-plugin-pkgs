@@ -16,17 +16,18 @@ on:
         default: WAMカタログを同期
         required: true
       id:
-        description: 登録、更新、削除するプラグインの固定 ID（版を再確認では、空にすると全部）
+        description: プラグインの固定 ID（登録では、空なら配布元の情報から決める。版を再確認では、空にすると全部）
         type: string
         required: false
       type:
-        description: 種類（登録のときだけ使う）
+        description: 種類（登録のときだけ使う。自動なら配布 URL の拡張子で決める）
         type: choice
         options:
+          - 自動
           - wam
           - manifest
           - vst
-        default: wam
+        default: 自動
         required: true
       name:
         description: 表示名
@@ -37,7 +38,7 @@ on:
         type: string
         required: false
       url:
-        description: プラグインの配布元 URL
+        description: プラグインの配布元 URL（登録では、これだけで足りる。名前や作者などは配布元の情報から入る）
         type: string
         required: false
       description:
@@ -86,6 +87,7 @@ jobs:
           PLUGIN_CATEGORIES: ${{ inputs.categories }}
           PLUGIN_SUBMITTER: ${{ inputs.submitter }}
         run: |
+          if [ "$PLUGIN_TYPE" = "自動" ]; then PLUGIN_TYPE=""; fi
           node scripts/catalog.mjs add "$PLUGIN_TYPE" "$PLUGIN_ID" "$PLUGIN_NAME" "$PLUGIN_AUTHOR" "$PLUGIN_URL" "$PLUGIN_DESCRIPTION" "$PLUGIN_WEBSITE" "$PLUGIN_CATEGORIES" "$PLUGIN_SUBMITTER"
       - name: プラグインを更新
         if: inputs.operation == '更新'

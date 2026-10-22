@@ -173,3 +173,59 @@ test('maintainers can refresh versions from the distributor', async () => {
     assert.equal((await read()).version, '9.9.9')
   })
 })
+
+const onlyUrl = { type: '', id: '', name: '', author: '', url: submission.url, description: '', website: '', categories: [] }
+const descriptor = {
+  identifier: 'net.example.reverb',
+  name: 'Example Reverb',
+  vendor: 'Example Audio',
+  description: 'From the descriptor.',
+  version: '1.2.3',
+  website: 'https://example.com',
+  thumbnail: 'shot.png',
+  keywords: ['reverb'],
+  isInstrument: false,
+}
+
+test('a submission with only the distribution link is filled in from descriptor.json', async () => {
+  await withCatalog(async ({ submit, read, remote }) => {
+    remote[descriptorUrl] = descriptor
+    const result = await submit(onlyUrl, 'alice')
+    assert.equal(result.status, 0, result.stderr)
+    const entry = await read()
+    assert.equal(entry.type, 'wam')
+    assert.equal(entry.name, 'Example Reverb')
+    assert.equal(entry.author, 'Example Audio')
+    assert.equal(entry.description, 'From the descriptor.')
+    assert.equal(entry.version, '1.2.3')
+    assert.equal(entry.website, 'https://example.com/')
+    assert.equal(entry.thumbnail, 'https://example.com/shot.png')
+    assert.deepEqual(entry.categories, ['Effect'])
+    assert.deepEqual(entry.keywords, ['reverb'])
+    assert.equal(entry.submitter, 'alice')
+  })
+})
+
+test('typed fields take priority, and an update keeps values that nothing else decides', async () => {
+  await withCatalog(async ({ submit, read, remote }) => {
+    remote[descriptorUrl] = descriptor
+    await submit({ ...onlyUrl, name: 'My Name', categories: ['Reverb'] }, 'alice')
+    let entry = await read()
+    assert.equal(entry.name, 'My Name')
+    assert.deepEqual(entry.categories, ['Reverb'])
+    // 配布元の情報が取れなくなっても、更新で今の値が消えない
+    delete remote[descriptorUrl]
+    await submit({ ...onlyUrl, id: 'net.example.reverb' }, 'alice')
+    entry = await read()
+    assert.equal(entry.name, 'My Name')
+    assert.equal(entry.description, 'From the descriptor.')
+    assert.equal(entry.version, '1.2.3')
+  })
+})
+
+test('a submission that cannot be completed is rejected', async () => {
+  await withCatalog(async ({ submit }) => {
+    assert.notEqual((await submit(onlyUrl, 'alice')).status, 0)
+    assert.notEqual((await submit({ ...onlyUrl, url: 'https://example.com/plugin.bin' }, 'alice')).status, 0)
+  })
+})

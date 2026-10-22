@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        透過 GitHub 帳號確認提交者。請只填寫發佈者已公開的 URL。
+        透過 GitHub 帳號確認提交者。只有發佈連結為必填。類型、ID、名稱、作者等留空時，會從發佈者的資訊（WAM 為同一資料夾的 descriptor.json，資訊清單則為該 JSON）自動填入。你填寫的內容優先。
   - type: dropdown
     id: type
     attributes:
@@ -16,31 +16,32 @@ body:
         - manifest
         - vst
     validations:
-      required: true
+      required: false
   - type: input
     id: id
     attributes:
       label: "ID"
-      description: "請使用小寫英數字、句點、連字號與底線（2 至 96 個字元）。"
+      description: "選填。留空則由發佈者的資訊決定。請使用小寫英數字、句點、連字號與底線（2 至 96 個字元）。"
       placeholder: com.example.plugin
     validations:
-      required: true
-      min-length: 2
+      required: false
       max-length: 96
   - type: input
     id: name
     attributes:
       label: "外掛名稱"
+      description: "選填。留空則由發佈者的資訊決定。"
       placeholder: Example Reverb
     validations:
-      required: true
+      required: false
       max-length: 120
   - type: input
     id: author
     attributes:
       label: "作者"
+      description: "選填。留空則由發佈者的資訊決定。"
     validations:
-      required: true
+      required: false
       max-length: 120
   - type: input
     id: url

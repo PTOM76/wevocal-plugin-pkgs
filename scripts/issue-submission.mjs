@@ -2,6 +2,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { typeFromUrl } from './remote.mjs'
 import { FIELDS, FIELD_BY_LABEL } from './submission-i18n.mjs'
 
 export function parseIssueSubmission(body) {
@@ -25,22 +26,25 @@ export function parseIssueSubmission(body) {
   }
 
   if (fields.size !== FIELDS.length) throw new Error('Issue Form の項目が不足しています')
-  const type = fields.get('type')
-  if (!['wam', 'manifest', 'vst'].includes(type)) throw new Error('プラグイン種別が不正です')
+  // 必須は配布リンクだけ。種別、ID、名前、作者が空のときは、配布リンクと配布元の情報（descriptor.json など）から決める
+  const url = fields.get('url')
+  const typeInput = fields.get('type')
+  if (typeInput && !['wam', 'manifest', 'vst'].includes(typeInput)) throw new Error('プラグイン種別が不正です')
+  const type = typeInput || typeFromUrl(url)
+  if (!type) throw new Error('配布 URL の拡張子（.js、.json、.dll）から種別を決められません')
 
   const id = fields.get('id')
-  if (!/^[a-z0-9][a-z0-9._-]{1,95}$/.test(id)) {
+  if (id && !/^[a-z0-9][a-z0-9._-]{1,95}$/.test(id)) {
     throw new Error('ID は小文字の英数字で始まる2〜96文字にしてください')
   }
   const name = fields.get('name')
   const author = fields.get('author')
-  const url = fields.get('url')
   const description = fields.get('description')
   const website = fields.get('website')
   const categoryText = fields.get('categories')
 
-  if (!name || name.length > 120) throw new Error('プラグイン名は1〜120文字にしてください')
-  if (!author || author.length > 120) throw new Error('作者は1〜120文字にしてください')
+  if (name.length > 120) throw new Error('プラグイン名は120文字以内にしてください')
+  if (author.length > 120) throw new Error('作者は120文字以内にしてください')
   if (!url || url.length > 2048) throw new Error('配布 URL は1〜2048文字にしてください')
   if (description.length > 500) throw new Error('説明は500文字以内にしてください')
   if (website.length > 2048) throw new Error('作者サイト URL は2048文字以内にしてください')

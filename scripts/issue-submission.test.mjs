@@ -73,6 +73,20 @@ for (const lang of LANGS) {
   })
 }
 
+test('accepts a form where only the distribution link is filled in', () => {
+  const body = FIELDS.map((key) => `### ${FIELD_LABELS[key].ja}\n${key === 'url' ? 'https://example.com/reverb.js' : '_No response_'}\n`).join('\n')
+  assert.deepEqual(parseIssueSubmission(body), {
+    type: 'wam',
+    id: '',
+    name: '',
+    author: '',
+    url: 'https://example.com/reverb.js',
+    description: '',
+    website: '',
+    categories: [],
+  })
+})
+
 test('rejects issues without all submission fields', () => {
   assert.throws(() => parseIssueSubmission(validBody.replace('### 種別\nwam\n\n', '')), /項目が不足/)
 })

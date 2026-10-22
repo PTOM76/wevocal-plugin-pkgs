@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        GitHub アカウントで投稿者を確認します。配布元が公開しているURLを入力してください。
+        GitHub アカウントで投稿者を確認します。必須なのは配布リンクだけです。種別、ID、名前、作者などは、空のままにすると、配布元の情報（WAM は同じフォルダーの descriptor.json、マニフェストはその JSON）から自動で入ります。入力した項目は、そちらより優先されます。
   - type: dropdown
     id: type
     attributes:
@@ -16,31 +16,32 @@ body:
         - manifest
         - vst
     validations:
-      required: true
+      required: false
   - type: input
     id: id
     attributes:
       label: "ID"
-      description: "小文字の英数字、ピリオド、ハイフン、アンダースコアを使用してください（2〜96文字）。"
+      description: "任意。空なら配布元の情報から決まります。小文字の英数字、ピリオド、ハイフン、アンダースコアを使用してください（2〜96文字）。"
       placeholder: com.example.plugin
     validations:
-      required: true
-      min-length: 2
+      required: false
       max-length: 96
   - type: input
     id: name
     attributes:
       label: "プラグイン名"
+      description: "任意。空なら配布元の情報から決まります。"
       placeholder: Example Reverb
     validations:
-      required: true
+      required: false
       max-length: 120
   - type: input
     id: author
     attributes:
       label: "作者"
+      description: "任意。空なら配布元の情報から決まります。"
     validations:
-      required: true
+      required: false
       max-length: 120
   - type: input
     id: url

@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        GitHub 계정으로 제출자를 확인합니다. 배포처에서 공개한 URL만 입력하세요.
+        GitHub 계정으로 제출자를 확인합니다. 필수 항목은 배포 링크뿐입니다. 종류, ID, 이름, 작성자 등을 비워 두면 배포처의 정보(WAM은 같은 폴더의 descriptor.json, 매니페스트는 그 JSON)에서 자동으로 채워집니다. 입력한 항목이 우선합니다.
   - type: dropdown
     id: type
     attributes:
@@ -16,31 +16,32 @@ body:
         - manifest
         - vst
     validations:
-      required: true
+      required: false
   - type: input
     id: id
     attributes:
       label: "ID"
-      description: "영문 소문자, 숫자, 마침표, 하이픈, 밑줄을 사용하세요 (2~96자)."
+      description: "선택. 비워 두면 배포처의 정보로 정해집니다. 영문 소문자, 숫자, 마침표, 하이픈, 밑줄을 사용하세요 (2~96자)."
       placeholder: com.example.plugin
     validations:
-      required: true
-      min-length: 2
+      required: false
       max-length: 96
   - type: input
     id: name
     attributes:
       label: "플러그인 이름"
+      description: "선택. 비워 두면 배포처의 정보로 정해집니다."
       placeholder: Example Reverb
     validations:
-      required: true
+      required: false
       max-length: 120
   - type: input
     id: author
     attributes:
       label: "작성자"
+      description: "선택. 비워 두면 배포처의 정보로 정해집니다."
     validations:
-      required: true
+      required: false
       max-length: 120
   - type: input
     id: url

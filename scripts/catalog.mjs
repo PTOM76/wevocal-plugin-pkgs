@@ -1,6 +1,6 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { provesOwnership, remoteVersion } from './remote.mjs'
+import { completeSubmission, provesOwnership, remoteVersion } from './remote.mjs'
 
 // テストでは CATALOG_ROOT で作業用のフォルダーに向ける
 const root = process.env.CATALOG_ROOT ?? resolve(import.meta.dirname, '..')
@@ -150,14 +150,14 @@ async function syncWam() {
 }
 
 async function addEntry(input) {
-  const entry = normalizeEntry(input)
+  const entry = normalizeEntry(await completeSubmission(input))
   try {
     await readFile(resolve(pluginsDir, `${entry.id}.json`), 'utf8')
     throw new Error(`プラグイン ID はすでに登録されています: ${entry.id}`)
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error
   }
-  await writeEntry(entry.version ? entry : await withRemoteVersion(entry))
+  await writeEntry(entry)
   console.log(`登録しました: ${entry.id}`)
 }
 
@@ -186,10 +186,12 @@ async function withRemoteVersion(entry) {
 // 投稿者が未設定の ID は、登録されている配布リンクの持ち主だと確認できたときだけ、その人を投稿者にして更新する（'claimed'）
 async function submitEntry(input, login) {
   const submitter = githubLogin(login)
-  const entry = normalizeEntry(input)
+  // 更新のときは、入力に ID がなくても配布元の情報の ID から、登録済みのエントリーを探せる
+  const resolved = await completeSubmission(input)
+  const entry = normalizeEntry(resolved)
   const current = await readEntry(entry.id)
   if (!current) {
-    await writeEntry(await withRemoteVersion({ ...entry, submitter }))
+    await writeEntry({ ...entry, submitter })
     return 'added'
   }
   let action = 'updated'
@@ -201,8 +203,9 @@ async function submitEntry(input, login) {
   } else if (current.submitter.toLowerCase() !== submitter.toLowerCase()) {
     throw new Error(`このプラグインを更新できるのは登録した投稿者だけです: ${entry.id}`)
   }
-  const { type, name, author, url, description, website, categories } = entry
-  await writeEntry(await withRemoteVersion({ ...current, type, name, author, url, description, website, categories, submitter: current.submitter ?? submitter }))
+  // 入力と配布元の情報で決まらなかった項目は、今のエントリーの値を残す
+  const merged = normalizeEntry(await completeSubmission(input, current))
+  await writeEntry({ ...current, ...merged, submitter: current.submitter ?? submitter })
   return action
 }
 

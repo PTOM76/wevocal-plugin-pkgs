@@ -55,6 +55,10 @@ jobs:
             - 投稿: ${{ github.event.issue.html_url }}
 
             マージ前に、対象のプラグインが合っていることを確認してください。
+
+            マージすると、この投稿の Issue は自動で閉じます。
+
+            Closes #${{ github.event.issue.number }}
       - name: Issue に結果を通知
         if: steps.pull-request.outputs.pull-request-number != ''
         uses: actions/github-script@v7

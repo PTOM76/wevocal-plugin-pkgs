@@ -12,15 +12,16 @@ const palettes = {
     background: { default: '#f9fafb', paper: '#ffffff' },
     divider: '#e5e7eb',
   },
+  // WeVocal Synth / Studio（PevenMUI）のダークテーマと同じ灰色の配色
   dark: {
     mode: 'dark',
-    primary: { main: '#60a5fa', dark: '#3b82f6', light: '#93c5fd', contrastText: '#0b1220' },
-    text: { primary: '#e5e7eb', secondary: '#9ca3af', disabled: '#6b7280' },
-    success: { main: '#34d399' },
-    warning: { main: '#fbbf24' },
-    error: { main: '#f87171' },
-    background: { default: '#0f172a', paper: '#1e293b' },
-    divider: '#334155',
+    primary: { main: '#8ab4f8', dark: '#669df6', light: '#aecbfa', contrastText: '#202124' },
+    text: { primary: '#e8eaed', secondary: '#9aa0a6', disabled: '#5f6368' },
+    success: { main: '#81c995' },
+    warning: { main: '#fdd663' },
+    error: { main: '#f28b82' },
+    background: { default: '#202124', paper: '#292a2d' },
+    divider: '#5f6368',
   },
 }
 
@@ -44,7 +45,7 @@ export const createAppTheme = (mode) => createTheme({
         root: { transition: 'background-color 0.2s, border-color 0.2s, color 0.2s' },
         sizeSmall: { height: 32, padding: '0 12px', fontSize: '0.8125rem' },
         sizeMedium: { height: 40, padding: '0 16px', fontSize: '0.875rem' },
-        outlined: { borderColor: mode === 'dark' ? '#475569' : '#d1d5db' },
+        outlined: { borderColor: mode === 'dark' ? '#5f6368' : '#d1d5db' },
       },
     },
     MuiPaper: {

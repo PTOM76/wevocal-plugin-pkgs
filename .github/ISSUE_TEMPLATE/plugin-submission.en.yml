@@ -1,0 +1,76 @@
+# GitHubログイン済みユーザーからプラグイン登録情報を受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "Plugin submission"
+description: "Request to list a plugin’s metadata and distribution link"
+title: "[Plugin submission]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Your GitHub account is used to confirm the submitter. Enter only URLs that the distributor has published.
+  - type: dropdown
+    id: type
+    attributes:
+      label: "Type"
+      options:
+        - wam
+        - manifest
+        - vst
+    validations:
+      required: true
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "Use lowercase letters, digits, periods, hyphens and underscores (2 to 96 characters)."
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: name
+    attributes:
+      label: "Plugin name"
+      placeholder: Example Reverb
+    validations:
+      required: true
+      max-length: 120
+  - type: input
+    id: author
+    attributes:
+      label: "Author"
+    validations:
+      required: true
+      max-length: 120
+  - type: input
+    id: url
+    attributes:
+      label: "Distribution link"
+      description: "An HTTPS URL of a WAM JavaScript file, a JSON manifest or a VST DLL, matching the type."
+      placeholder: https://example.com/plugin.js
+    validations:
+      required: true
+      max-length: 2048
+  - type: input
+    id: description
+    attributes:
+      label: "Description (optional)"
+    validations:
+      required: false
+      max-length: 500
+  - type: input
+    id: website
+    attributes:
+      label: "Author website (optional)"
+      description: "Enter an HTTPS URL."
+    validations:
+      required: false
+      max-length: 2048
+  - type: input
+    id: categories
+    attributes:
+      label: "Categories (comma-separated, optional)"
+      placeholder: Effect, Reverb
+    validations:
+      required: false
+      max-length: 400

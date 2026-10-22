@@ -1,4 +1,5 @@
 // 公開GitHub Issueからログイン中のChreeIDに紐づく申請を検索する。
+import { isSubmissionTitle } from '../scripts/submission-i18n.mjs'
 const repository = 'PTOM76/wevocal-plugin-pkgs'
 const apiBase = `https://api.github.com/repos/${repository}`
 const apiPath = new URL(apiBase).pathname
@@ -63,7 +64,7 @@ export async function fetchChreeidSubmissions(sub, { fetcher = fetch, signal } =
     totalCount = result.total_count
     if (result.incomplete_results) throw new Error('GitHubの申請検索結果が不完全です。時間をおいて再試行してください。')
     fetchedCount += result.items.length
-    issues.push(...result.items.filter((issue) => issue.title?.startsWith('[プラグイン登録]')))
+    issues.push(...result.items.filter((issue) => isSubmissionTitle(issue.title)))
     page += 1
   } while (fetchedCount < totalCount && page <= 10)
   if (fetchedCount < totalCount) throw new Error('申請が多いため一覧を最後まで検索できませんでした。')

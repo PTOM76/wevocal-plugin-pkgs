@@ -1,0 +1,76 @@
+# GitHubログイン済みユーザーからプラグイン登録情報を受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "外掛登錄"
+description: "申請收錄外掛的中繼資料與發佈連結"
+title: "[外掛登錄]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        透過 GitHub 帳號確認提交者。請只填寫發佈者已公開的 URL。
+  - type: dropdown
+    id: type
+    attributes:
+      label: "類型"
+      options:
+        - wam
+        - manifest
+        - vst
+    validations:
+      required: true
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "請使用小寫英數字、句點、連字號與底線（2 至 96 個字元）。"
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: name
+    attributes:
+      label: "外掛名稱"
+      placeholder: Example Reverb
+    validations:
+      required: true
+      max-length: 120
+  - type: input
+    id: author
+    attributes:
+      label: "作者"
+    validations:
+      required: true
+      max-length: 120
+  - type: input
+    id: url
+    attributes:
+      label: "發佈連結"
+      description: "與類型對應的 WAM JavaScript、JSON 資訊清單或 VST DLL 的 HTTPS URL。"
+      placeholder: https://example.com/plugin.js
+    validations:
+      required: true
+      max-length: 2048
+  - type: input
+    id: description
+    attributes:
+      label: "說明（選填）"
+    validations:
+      required: false
+      max-length: 500
+  - type: input
+    id: website
+    attributes:
+      label: "作者網站（選填）"
+      description: "請輸入 HTTPS URL。"
+    validations:
+      required: false
+      max-length: 2048
+  - type: input
+    id: categories
+    attributes:
+      label: "分類（以逗號分隔，選填）"
+      placeholder: Effect, Reverb
+    validations:
+      required: false
+      max-length: 400

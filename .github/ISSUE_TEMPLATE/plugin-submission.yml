@@ -1,6 +1,6 @@
-# GitHubログイン済みユーザーからプラグイン登録情報を受け付けるフォーム。
-name: プラグイン登録
-description: プラグインのメタデータと配布リンクの掲載を申請
+# GitHubログイン済みユーザーからプラグイン登録情報を受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "プラグイン登録"
+description: "プラグインのメタデータと配布リンクの掲載を申請"
 title: "[プラグイン登録]"
 body:
   - type: markdown
@@ -10,7 +10,7 @@ body:
   - type: dropdown
     id: type
     attributes:
-      label: 種別
+      label: "種別"
       options:
         - wam
         - manifest
@@ -20,8 +20,8 @@ body:
   - type: input
     id: id
     attributes:
-      label: ID
-      description: 小文字の英数字、ピリオド、ハイフン、アンダースコアを使用してください（2〜96文字）。
+      label: "ID"
+      description: "小文字の英数字、ピリオド、ハイフン、アンダースコアを使用してください（2〜96文字）。"
       placeholder: com.example.plugin
     validations:
       required: true
@@ -30,7 +30,7 @@ body:
   - type: input
     id: name
     attributes:
-      label: プラグイン名
+      label: "プラグイン名"
       placeholder: Example Reverb
     validations:
       required: true
@@ -38,15 +38,15 @@ body:
   - type: input
     id: author
     attributes:
-      label: 作者
+      label: "作者"
     validations:
       required: true
       max-length: 120
   - type: input
     id: url
     attributes:
-      label: 配布リンク
-      description: 種別に応じた WAM JavaScript、JSON マニフェスト、または VST DLL の HTTPS URL。
+      label: "配布リンク"
+      description: "種別に応じた WAM JavaScript、JSON マニフェスト、または VST DLL の HTTPS URL。"
       placeholder: https://example.com/plugin.js
     validations:
       required: true
@@ -54,22 +54,22 @@ body:
   - type: input
     id: description
     attributes:
-      label: 説明（任意）
+      label: "説明（任意）"
     validations:
       required: false
       max-length: 500
   - type: input
     id: website
     attributes:
-      label: 作者サイト（任意）
-      description: HTTPS URL を入力してください。
+      label: "作者サイト（任意）"
+      description: "HTTPS URL を入力してください。"
     validations:
       required: false
       max-length: 2048
   - type: input
     id: categories
     attributes:
-      label: カテゴリ（カンマ区切り、任意）
+      label: "カテゴリ（カンマ区切り、任意）"
       placeholder: Effect, Reverb
     validations:
       required: false

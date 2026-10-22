@@ -17,7 +17,11 @@ jobs:
     if: >-
       github.event.issue.pull_request == null &&
       github.event.issue.user.login == github.event.comment.user.login &&
-      startsWith(github.event.issue.title, '[プラグイン登録]') &&
+      (startsWith(github.event.issue.title, '[プラグイン登録]') ||
+        startsWith(github.event.issue.title, '[Plugin submission]') ||
+        startsWith(github.event.issue.title, '[플러그인 등록]') ||
+        startsWith(github.event.issue.title, '[插件登记]') ||
+        startsWith(github.event.issue.title, '[外掛登錄]')) &&
       startsWith(github.event.comment.body, '/link-chreeid')
     name: Issue専用のChreeID認証リンクを発行
     runs-on: ubuntu-latest
@@ -38,6 +42,8 @@ jobs:
           CHREEID_NONCE: ${{ steps.challenge.outputs.nonce }}
         with:
           script: |
+            const { langOfTitle, replyText } = await import(`file://${process.env.GITHUB_WORKSPACE}/scripts/submission-i18n.mjs`)
+            const lang = langOfTitle(context.payload.issue.title)
             const comments = await github.paginate(github.rest.issues.listComments, {
               ...context.repo,
               issue_number: context.issue.number,
@@ -46,24 +52,29 @@ jobs:
               await github.rest.issues.createComment({
                 ...context.repo,
                 issue_number: context.issue.number,
-                body: 'このIssueはすでにChreeID連携済みです。',
+                body: replyText(lang, 'alreadyLinked'),
               })
               return
             }
             const url = new URL('https://plugins.wevocal.pitan76.net/')
             url.searchParams.set('chreeid_issue', String(context.issue.number))
             url.searchParams.set('chreeid_nonce', process.env.CHREEID_NONCE)
+            url.searchParams.set('lang', lang)
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
-              body: `[ChreeID連携を開始する](${url.href})\n\n認証後、画面のコマンドをこのIssueにコメントしてください。`,
+              body: replyText(lang, 'linkStart', url.href),
             })
 
   verify:
     if: >-
       github.event.issue.pull_request == null &&
       github.event.issue.user.login == github.event.comment.user.login &&
-      startsWith(github.event.issue.title, '[プラグイン登録]') &&
+      (startsWith(github.event.issue.title, '[プラグイン登録]') ||
+        startsWith(github.event.issue.title, '[Plugin submission]') ||
+        startsWith(github.event.issue.title, '[플러그인 등록]') ||
+        startsWith(github.event.issue.title, '[插件登记]') ||
+        startsWith(github.event.issue.title, '[外掛登錄]')) &&
       startsWith(github.event.comment.body, '/chreeid-proof ')
     name: 暗号化されたChreeID証明を検証
     runs-on: ubuntu-latest
@@ -102,6 +113,8 @@ jobs:
           CHREEID_SUB: ${{ steps.proof.outputs.sub }}
         with:
           script: |
+            const { langOfTitle, replyText } = await import(`file://${process.env.GITHUB_WORKSPACE}/scripts/submission-i18n.mjs`)
+            const lang = langOfTitle(context.payload.issue.title)
             const encodedSub = process.env.CHREEID_SUB
             if (!encodedSub || !/^[A-Za-z0-9_-]+$/.test(encodedSub)) {
               throw new Error('検証済みのChreeID subがありません')
@@ -113,15 +126,17 @@ jobs:
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
-              body: `<!-- chreeid-linked:v1 -->\nChreeIDアカウントとの連携を確認しました。\n\n- ChreeID sub: \`${escapedSub}\`\n- GitHub投稿者: @${context.payload.issue.user.login}`,
+              body: `<!-- chreeid-linked:v1 -->\n${replyText(lang, 'linked', escapedSub, context.payload.issue.user.login)}`,
             })
       - name: 検証失敗を通知
         if: failure()
         uses: actions/github-script@v7
         with:
           script: |
+            const { langOfTitle, replyText } = await import(`file://${process.env.GITHUB_WORKSPACE}/scripts/submission-i18n.mjs`)
+            const lang = langOfTitle(context.payload.issue.title)
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
-              body: 'ChreeID連携を確認できませんでした。Issue投稿者本人が最新の連携リンクを使ってください。',
+              body: replyText(lang, 'linkFailed'),
             })

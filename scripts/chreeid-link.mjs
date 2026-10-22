@@ -3,6 +3,7 @@ import { createCipheriv, createDecipheriv, createHmac, createPublicKey, privateD
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { isSubmissionTitle } from './submission-i18n.mjs'
 
 const issuer = 'https://id.wikichree.com'
 const tokenLifetimeLimit = 3600
@@ -116,7 +117,7 @@ async function verifyIdToken(token, { clientId, nonce, now, fetcher }) {
 export async function verifyChreeidProof(event, { privateKey, clientId, repository, now = Math.floor(Date.now() / 1000), fetcher = fetch }) {
   requireIssueAuthor(event)
   const issueNumber = issueNumberOf(event)
-  if (!event.issue.title?.startsWith('[プラグイン登録]')) throw new Error('プラグイン投稿Issueではありません')
+  if (!isSubmissionTitle(event.issue.title)) throw new Error('プラグイン投稿Issueではありません')
   const match = /^\/chreeid-proof ([A-Za-z0-9_-]+)$/.exec(event.comment.body ?? '')
   if (!match) throw new Error('ChreeID証明コマンドの形式が不正です')
   if (!privateKey || !clientId) throw new Error('ChreeID連携のActions設定が不足しています')

@@ -1,0 +1,76 @@
+# GitHubログイン済みユーザーからプラグイン登録情報を受け付けるフォーム（scripts/issue-templates.mjs で生成）。
+name: "插件登记"
+description: "申请收录插件的元数据和分发链接"
+title: "[插件登记]"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        通过 GitHub 账号确认提交者。请只填写分发方已公开的 URL。
+  - type: dropdown
+    id: type
+    attributes:
+      label: "类型"
+      options:
+        - wam
+        - manifest
+        - vst
+    validations:
+      required: true
+  - type: input
+    id: id
+    attributes:
+      label: "ID"
+      description: "请使用小写字母、数字、句点、连字符和下划线（2 至 96 个字符）。"
+      placeholder: com.example.plugin
+    validations:
+      required: true
+      min-length: 2
+      max-length: 96
+  - type: input
+    id: name
+    attributes:
+      label: "插件名称"
+      placeholder: Example Reverb
+    validations:
+      required: true
+      max-length: 120
+  - type: input
+    id: author
+    attributes:
+      label: "作者"
+    validations:
+      required: true
+      max-length: 120
+  - type: input
+    id: url
+    attributes:
+      label: "分发链接"
+      description: "与类型对应的 WAM JavaScript、JSON 清单或 VST DLL 的 HTTPS URL。"
+      placeholder: https://example.com/plugin.js
+    validations:
+      required: true
+      max-length: 2048
+  - type: input
+    id: description
+    attributes:
+      label: "说明（可选）"
+    validations:
+      required: false
+      max-length: 500
+  - type: input
+    id: website
+    attributes:
+      label: "作者网站（可选）"
+      description: "请输入 HTTPS URL。"
+    validations:
+      required: false
+      max-length: 2048
+  - type: input
+    id: categories
+    attributes:
+      label: "分类（用逗号分隔，可选）"
+      placeholder: Effect, Reverb
+    validations:
+      required: false
+      max-length: 400

@@ -2,17 +2,7 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-
-const fieldNames = [
-  '種別',
-  'ID',
-  'プラグイン名',
-  '作者',
-  '配布リンク',
-  '説明（任意）',
-  '作者サイト（任意）',
-  'カテゴリ（カンマ区切り、任意）',
-]
+import { FIELDS, FIELD_BY_LABEL } from './submission-i18n.mjs'
 
 export function parseIssueSubmission(body) {
   if (typeof body !== 'string' || body.length > 20_000) {
@@ -34,19 +24,19 @@ export function parseIssueSubmission(body) {
   }
 
   if (fields.size !== fieldNames.length) throw new Error('Issue Form の項目が不足しています')
-  const type = fields.get('種別')
+  const type = fields.get('type')
   if (!['wam', 'manifest', 'vst'].includes(type)) throw new Error('プラグイン種別が不正です')
 
-  const id = fields.get('ID')
+  const id = fields.get('id')
   if (!/^[a-z0-9][a-z0-9._-]{1,95}$/.test(id)) {
     throw new Error('ID は小文字の英数字で始まる2〜96文字にしてください')
   }
-  const name = fields.get('プラグイン名')
-  const author = fields.get('作者')
-  const url = fields.get('配布リンク')
-  const description = fields.get('説明（任意）')
-  const website = fields.get('作者サイト（任意）')
-  const categoryText = fields.get('カテゴリ（カンマ区切り、任意）')
+  const name = fields.get('name')
+  const author = fields.get('author')
+  const url = fields.get('url')
+  const description = fields.get('description')
+  const website = fields.get('website')
+  const categoryText = fields.get('categories')
 
   if (!name || name.length > 120) throw new Error('プラグイン名は1〜120文字にしてください')
   if (!author || author.length > 120) throw new Error('作者は1〜120文字にしてください')

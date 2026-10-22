@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node --test scripts/*.test.mjs"
+    "test": "node --test scripts/*.test.mjs",
+    "logo": "node scripts/logo-png.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -19,6 +20,7 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@vitejs/plugin-react": "^6.1.1",
     "vite": "^8.3.4"
   }

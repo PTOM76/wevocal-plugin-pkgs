@@ -1,5 +1,6 @@
 import { appendFile, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { provesOwnership, remoteVersion } from './remote.mjs'
 
 // テストでは CATALOG_ROOT で作業用のフォルダーに向ける
 const root = process.env.CATALOG_ROOT ?? resolve(import.meta.dirname, '..')
@@ -170,26 +171,39 @@ async function readEntry(id) {
 }
 
 async function reportAction(action) {
-  console.log(action === 'updated' ? '更新しました' : '登録しました')
+  console.log({ updated: '更新しました', claimed: '投稿者を紐づけて更新しました' }[action] ?? '登録しました')
   if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `action=${action}
 `)
 }
 
-// 掲載申請。新しい ID は投稿者つきで登録し、登録済みの ID は同じ投稿者のときだけ更新する
+// 配布元が公開している版があれば、それをエントリーの版にする（取れなければ今の版を残す）
+async function withRemoteVersion(entry) {
+  const version = await remoteVersion(entry)
+  return version ? { ...entry, version } : entry
+}
+
+// 掲載申請。新しい ID は投稿者つきで登録する。登録済みの ID は、同じ投稿者のときだけ更新する。
+// 投稿者が未設定の ID は、登録されている配布リンクの持ち主だと確認できたときだけ、その人を投稿者にして更新する（'claimed'）
 async function submitEntry(input, login) {
   const submitter = githubLogin(login)
   const entry = normalizeEntry(input)
   const current = await readEntry(entry.id)
   if (!current) {
-    await writeEntry({ ...entry, submitter })
+    await writeEntry(await withRemoteVersion({ ...entry, submitter }))
     return 'added'
   }
-  if (!current.submitter || current.submitter.toLowerCase() !== submitter.toLowerCase()) {
+  let action = 'updated'
+  if (!current.submitter) {
+    if (!(await provesOwnership(current, submitter))) {
+      throw new Error(`投稿者が未設定のプラグインを紐づけるには、登録されている配布リンクの持ち主であることの確認が必要です: ${entry.id}`)
+    }
+    action = 'claimed'
+  } else if (current.submitter.toLowerCase() !== submitter.toLowerCase()) {
     throw new Error(`このプラグインを更新できるのは登録した投稿者だけです: ${entry.id}`)
   }
   const { type, name, author, url, description, website, categories } = entry
-  await writeEntry({ ...current, type, name, author, url, description, website, categories })
-  return 'updated'
+  await writeEntry(await withRemoteVersion({ ...current, type, name, author, url, description, website, categories, submitter: current.submitter ?? submitter }))
+  return action
 }
 
 // メンテナーの更新。key=value で渡した項目だけを書き換える（空の値は無視する）

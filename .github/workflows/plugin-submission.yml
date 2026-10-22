@@ -59,8 +59,8 @@ jobs:
         with:
           branch: plugin-submission-${{ github.event.issue.number }}
           delete-branch: true
-          commit-message: "catalog: プラグイン登録情報を${{ steps.catalog.outputs.action == 'updated' && '更新' || '追加' }}"
-          title: "プラグインカタログ: ${{ steps.catalog.outputs.action == 'updated' && '更新提案' || '登録提案' }} #${{ github.event.issue.number }}"
+          commit-message: "catalog: プラグイン登録情報を${{ steps.catalog.outputs.action == 'added' && '追加' || '更新' }}"
+          title: "プラグインカタログ: ${{ steps.catalog.outputs.action == 'added' && '登録提案' || steps.catalog.outputs.action == 'claimed' && '投稿者の紐づけと更新の提案' || '更新提案' }} #${{ github.event.issue.number }}"
           body: |
             **GitHub Issue Form** から送信された登録提案です。
 

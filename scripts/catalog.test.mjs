@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 
 const script = fileURLToPath(new URL('./catalog.mjs', import.meta.url))
+const testFetch = new URL('./test-fetch.mjs', import.meta.url).href
 const submission = {
   type: 'wam',
   id: 'net.example.reverb',
@@ -21,7 +22,12 @@ const submission = {
 
 async function withCatalog(run) {
   const root = await mkdtemp(join(tmpdir(), 'catalog-'))
-  const catalog = (...args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', env: { ...process.env, CATALOG_ROOT: root, GITHUB_OUTPUT: '' } })
+  // 通信はせず、remote に入れた URL の JSON だけを返す（入れていない URL は 404）
+  const remote = {}
+  const catalog = (...args) => spawnSync(process.execPath, ['--import', testFetch, script, ...args], {
+    encoding: 'utf8',
+    env: { ...process.env, CATALOG_ROOT: root, GITHUB_OUTPUT: '', TEST_FETCH_STRICT: '1', TEST_FETCH_MAP: JSON.stringify(remote) },
+  })
   const submit = async (entry, login) => {
     const path = join(root, 'submission.json')
     await writeFile(path, JSON.stringify(entry))
@@ -29,7 +35,7 @@ async function withCatalog(run) {
   }
   const read = async () => JSON.parse(await readFile(join(root, 'data/plugins/net.example.reverb.json'), 'utf8'))
   try {
-    await run({ root, catalog, submit, read })
+    await run({ root, catalog, submit, read, remote })
   } finally {
     await rm(root, { recursive: true, force: true })
   }
@@ -100,5 +106,54 @@ test('an entry without a submitter cannot be withdrawn by a user', async () => {
     catalog('add', 'wam', submission.id, submission.name, submission.author, submission.url)
     assert.notEqual(catalog('withdraw', submission.id, 'mallory').status, 0)
     assert.equal((await read()).id, submission.id)
+  })
+})
+
+const descriptorUrl = 'https://example.com/descriptor.json'
+
+test('the version is taken from the distributor descriptor on submit and update', async () => {
+  await withCatalog(async ({ submit, read, remote }) => {
+    remote[descriptorUrl] = { version: '1.0.0' }
+    await submit(submission, 'alice')
+    assert.equal((await read()).version, '1.0.0')
+    remote[descriptorUrl] = { version: '1.0.1' }
+    await submit(submission, 'alice')
+    assert.equal((await read()).version, '1.0.1')
+    // 取れなくなったときは、今の版を残す
+    delete remote[descriptorUrl]
+    await submit({ ...submission, description: 'changed' }, 'alice')
+    assert.equal((await read()).version, '1.0.1')
+  })
+})
+
+test('an entry without a submitter can be linked when the descriptor names the GitHub owner', async () => {
+  await withCatalog(async ({ catalog, submit, read, remote }) => {
+    catalog('add', 'wam', submission.id, submission.name, submission.author, submission.url)
+    assert.notEqual((await submit(submission, 'alice')).status, 0)
+    remote[descriptorUrl] = { version: '2.0.0', githubOwner: 'Alice' }
+    assert.notEqual((await submit(submission, 'mallory')).status, 0)
+    assert.equal((await submit({ ...submission, description: 'linked' }, 'alice')).status, 0)
+    const entry = await read()
+    assert.equal(entry.submitter, 'alice')
+    assert.equal(entry.description, 'linked')
+    assert.equal(entry.version, '2.0.0')
+  })
+})
+
+test('an entry hosted under the user GitHub can be linked by that user only', async () => {
+  await withCatalog(async ({ catalog, submit, read }) => {
+    const url = 'https://alice.github.io/reverb/index.js'
+    catalog('add', 'wam', submission.id, submission.name, submission.author, url)
+    assert.notEqual((await submit({ ...submission, url }, 'mallory')).status, 0)
+    assert.equal((await submit({ ...submission, url }, 'alice')).status, 0)
+    assert.equal((await read()).submitter, 'alice')
+  })
+})
+
+test('ownership is checked against the registered URL, not the submitted one', async () => {
+  await withCatalog(async ({ catalog, submit }) => {
+    catalog('add', 'wam', submission.id, submission.name, submission.author, submission.url)
+    const result = await submit({ ...submission, url: 'https://mallory.github.io/reverb/index.js' }, 'mallory')
+    assert.notEqual(result.status, 0)
   })
 })

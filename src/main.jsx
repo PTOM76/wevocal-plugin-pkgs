@@ -305,7 +305,7 @@ function App() {
             </TextField>
             {account && (
               <Button component="a" href={showSubmissions ? '#/' : submissionsHash} size="small">
-                {showSubmissions ? t('nav.catalog') : t('submissions.title')}
+                {showSubmissions ? t('nav.catalog') : t('nav.mypage')}
               </Button>
             )}
             {account ? (

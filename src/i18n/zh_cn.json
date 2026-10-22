@@ -5,6 +5,7 @@
   "header.login_aria": "使用 ChreeID 登录",
   "header.logout": "退出登录",
   "header.submit": "登记申请",
+  "nav.mypage": "我的主页",
   "nav.catalog": "目录",
   "header.language": "语言",
   "catalog.search_placeholder": "按名称、作者、分类搜索",

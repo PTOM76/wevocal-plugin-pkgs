@@ -282,7 +282,11 @@ function App() {
               select
               value={lang}
               onChange={(event) => setLang(event.target.value)}
-              sx={{ width: { xs: 104, sm: 128 } }}
+              sx={{
+                width: { xs: 96, sm: 112 },
+                '& .MuiInputBase-root': { height: 32, fontSize: '0.8125rem' },
+                '& .MuiSelect-select': { py: 0, pl: 1.5, display: 'flex', alignItems: 'center', minHeight: '0 !important' },
+              }}
               slotProps={{ htmlInput: { 'aria-label': t('header.language') } }}
             >
               {LANGS.map((code) => <MenuItem key={code} value={code}>{LANG_NAMES[code]}</MenuItem>)}

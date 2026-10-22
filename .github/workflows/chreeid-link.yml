@@ -99,6 +99,7 @@ jobs:
         env:
           CHREEID_LINK_PRIVATE_KEY: ${{ secrets.CHREEID_LINK_PRIVATE_KEY }}
           CHREEID_CLIENT_ID: ${{ vars.CHREEID_CLIENT_ID }}
+          CHREEID_JWKS: ${{ vars.CHREEID_JWKS }}
         run: |
           set -euo pipefail
           sub="$(node scripts/chreeid-link.mjs verify "$GITHUB_EVENT_PATH")"

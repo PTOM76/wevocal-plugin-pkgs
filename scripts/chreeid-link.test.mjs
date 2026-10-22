@@ -100,3 +100,19 @@ test('rejects proof comments attached to another Issue', async () => {
   event.issue.number += 1
   await assert.rejects(verifyChreeidProof(event, options), /nonce/)
 })
+
+const blockedJwks = async () => ({ ok: false, status: 403, json: async () => ({}) })
+
+test('uses the stored public keys when ChreeID refuses the key request', async () => {
+  const blocked = { ...options, fetcher: blockedJwks }
+  await assert.rejects(verifyChreeidProof(eventFor(tokenFor()), blocked), /HTTP 403/)
+  const withFallback = { ...blocked, jwksFallback: JSON.stringify({ keys: [jwk] }) }
+  assert.equal(await verifyChreeidProof(eventFor(tokenFor()), withFallback), 'chreeid-user-123')
+})
+
+test('the stored public keys still have to match the token signature', async () => {
+  const other = generateKeyPairSync('rsa', { modulusLength: 2048 }).publicKey
+  const wrong = { ...other.export({ format: 'jwk' }), kid: 'test-key', alg: 'RS256', use: 'sig' }
+  const options403 = { ...options, fetcher: blockedJwks, jwksFallback: JSON.stringify({ keys: [wrong] }) }
+  await assert.rejects(verifyChreeidProof(eventFor(tokenFor()), options403), /署名/)
+})

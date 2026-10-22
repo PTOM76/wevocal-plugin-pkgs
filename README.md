@@ -52,6 +52,8 @@ ChreeIDでログインすると、GitHub Issue上で同じChreeIDアカウント
 
 Pagesのビルドで公開用の `CHREEID_CLIENT_ID` と暗号化用公開鍵がフロントエンドへ渡る。ChreeIDクライアントの登録、鍵とActions変数/Secretが揃うまでは連携を利用できない。
 
+5. ChreeID 側の防御（Cloudflare など）が、GitHub Actions からの公開署名鍵の取得（`/oauth/jwks`）を断る（HTTP 403）ことがある。ChreeID 側で `/oauth/jwks` を許可するのが本筋だが、できないときは、ブラウザーや手元で取得した内容（`curl https://id.wikichree.com/oauth/jwks`）をそのまま Actions 変数 `CHREEID_JWKS` に入れておく。取得が断られたときだけ、この内容を使う（署名の検証は同じように行う）。ChreeID が鍵を入れ替えたら、変数も更新する。
+
 ローカルで画面を確認・ビルドするには、Node.js 22 を用意して次を実行する。
 ```sh
 npm ci

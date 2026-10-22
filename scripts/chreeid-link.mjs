@@ -64,7 +64,7 @@ function decryptToken(encodedEnvelope, privateKey) {
   return plaintext.toString('utf8')
 }
 
-async function verifyIdToken(token, { clientId, nonce, now, fetcher }) {
+async function verifyIdToken(token, { clientId, nonce, now, fetcher, jwksFallback }) {
   const parts = token.split('.')
   if (parts.length !== 3) throw new Error('ChreeID IDトークンの形式が不正です')
   const header = JSON.parse(decodeBase64Url(parts[0], 2048).toString('utf8'))
@@ -74,9 +74,19 @@ async function verifyIdToken(token, { clientId, nonce, now, fetcher }) {
   }
   if (header.alg !== 'RS256' || typeof header.kid !== 'string') throw new Error('ChreeID署名方式が不正です')
 
-  const response = await fetcher(`${issuer}/oauth/jwks`, { signal: AbortSignal.timeout(10000) })
-  if (!response.ok) throw new Error(`ChreeID署名鍵を取得できません（HTTP ${response.status}）`)
-  const jwks = await response.json()
+  const response = await fetcher(`${issuer}/oauth/jwks`, {
+    signal: AbortSignal.timeout(10000),
+    headers: { Accept: 'application/json', 'User-Agent': 'wevocal-plugin-pkgs (+https://github.com/PTOM76/wevocal-plugin-pkgs)' },
+  })
+  let jwks
+  if (response.ok) {
+    jwks = await response.json()
+  } else if (jwksFallback) {
+    // ChreeID 側の防御（Cloudflare など）が Actions からの取得を断ることがある。そのときは、控えておいた公開鍵（Actions 変数 CHREEID_JWKS）を使う
+    jwks = JSON.parse(jwksFallback)
+  } else {
+    throw new Error(`ChreeID署名鍵を取得できません（HTTP ${response.status}）`)
+  }
   const jwk = jwks.keys?.find((key) =>
     key.kid === header.kid
     && key.kty === 'RSA'
@@ -114,7 +124,7 @@ async function verifyIdToken(token, { clientId, nonce, now, fetcher }) {
   return claims.sub
 }
 
-export async function verifyChreeidProof(event, { privateKey, clientId, repository, now = Math.floor(Date.now() / 1000), fetcher = fetch }) {
+export async function verifyChreeidProof(event, { privateKey, clientId, repository, now = Math.floor(Date.now() / 1000), fetcher = fetch, jwksFallback = '' }) {
   requireIssueAuthor(event)
   const issueNumber = issueNumberOf(event)
   if (!isSubmissionTitle(event.issue.title)) throw new Error('プラグイン投稿Issueではありません')
@@ -123,7 +133,7 @@ export async function verifyChreeidProof(event, { privateKey, clientId, reposito
   if (!privateKey || !clientId) throw new Error('ChreeID連携のActions設定が不足しています')
 
   const nonce = issueChallenge(privateKey, repository, issueNumber)
-  return verifyIdToken(decryptToken(match[1], privateKey), { clientId, nonce, now, fetcher })
+  return verifyIdToken(decryptToken(match[1], privateKey), { clientId, nonce, now, fetcher, jwksFallback })
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
@@ -139,6 +149,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
       privateKey,
       clientId: process.env.CHREEID_CLIENT_ID,
       repository: process.env.GITHUB_REPOSITORY,
+      jwksFallback: process.env.CHREEID_JWKS,
     })
     process.stdout.write(`${Buffer.from(sub).toString('base64url')}\n`)
   } else {

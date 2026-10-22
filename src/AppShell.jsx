@@ -89,12 +89,7 @@ export default function AppShell({ page, account, onLogin, onLogout, children })
               </IconButton>
               {account ? (
                 <>
-                  <Button
-                    component="a"
-                    href={onMypage ? catalogPath : mypagePath}
-                    variant="contained"
-                    size="small"
-                  >
+                  <Button component="a" href={onMypage ? catalogPath : mypagePath} size="small">
                     {onMypage ? t('nav.catalog') : t('nav.mypage')}
                   </Button>
                   <Button onClick={onLogout} size="small">{t('header.logout')}</Button>

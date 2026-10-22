@@ -22,7 +22,8 @@ export function parseIssueSubmission(body) {
     }
     const value = section.slice(newline + 1).trim()
     if (value.includes('\n')) throw new Error(`複数行の入力はできません: ${label}`)
-    fields.set(key, value === '_No response_' ? '' : value)
+    // 未選択のドロップダウンは、本文に「None」と書かれる
+    fields.set(key, value === '_No response_' || (key === 'type' && value === 'None') ? '' : value)
   }
 
   if (fields.size !== FIELDS.length) throw new Error('Issue Form の項目が不足しています')

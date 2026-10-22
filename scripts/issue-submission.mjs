@@ -14,16 +14,17 @@ export function parseIssueSubmission(body) {
   for (const section of sections) {
     const newline = section.indexOf('\n')
     if (newline < 0) throw new Error('Issue Form の項目が不正です')
-    const name = section.slice(0, newline).trim()
-    if (!fieldNames.includes(name) || fields.has(name)) {
-      throw new Error(`Issue Form に不明または重複した項目があります: ${name}`)
+    const label = section.slice(0, newline).trim()
+    const key = FIELD_BY_LABEL.get(label)
+    if (!key || fields.has(key)) {
+      throw new Error(`Issue Form に不明または重複した項目があります: ${label}`)
     }
     const value = section.slice(newline + 1).trim()
-    if (value.includes('\n')) throw new Error(`複数行の入力はできません: ${name}`)
-    fields.set(name, value === '_No response_' ? '' : value)
+    if (value.includes('\n')) throw new Error(`複数行の入力はできません: ${label}`)
+    fields.set(key, value === '_No response_' ? '' : value)
   }
 
-  if (fields.size !== fieldNames.length) throw new Error('Issue Form の項目が不足しています')
+  if (fields.size !== FIELDS.length) throw new Error('Issue Form の項目が不足しています')
   const type = fields.get('type')
   if (!['wam', 'manifest', 'vst'].includes(type)) throw new Error('プラグイン種別が不正です')
 

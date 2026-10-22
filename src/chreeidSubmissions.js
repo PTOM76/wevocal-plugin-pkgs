@@ -1,5 +1,6 @@
 // 公開GitHub Issueからログイン中のChreeIDに紐づく申請を検索する。
 import { isSubmissionTitle } from '../scripts/submission-i18n.mjs'
+import { LocalizedError } from './localizedError.js'
 const repository = 'PTOM76/wevocal-plugin-pkgs'
 const apiBase = `https://api.github.com/repos/${repository}`
 const apiPath = new URL(apiBase).pathname
@@ -19,14 +20,14 @@ async function getJson(url, fetcher, signal) {
       'X-GitHub-Api-Version': '2022-11-28',
     },
   })
-  if (!response.ok) throw new Error(`GitHub APIから申請を取得できません（HTTP ${response.status}）`)
+  if (!response.ok) throw new LocalizedError('submissions.api_failed', { status: response.status })
   return response.json()
 }
 
 async function linkedCommentExists(issue, sub, fetcher, signal) {
   const commentsUrl = new URL(issue.comments_url)
   if (commentsUrl.origin !== 'https://api.github.com' || !commentsUrl.pathname.startsWith(`${apiPath}/issues/`)) {
-    throw new Error('GitHub APIから不正なコメントURLが返されました')
+    throw new LocalizedError('submissions.bad_comment_url')
   }
 
   const expectedSub = `- ChreeID sub: \`${escapeCommentText(sub)}\``
@@ -47,7 +48,7 @@ async function linkedCommentExists(issue, sub, fetcher, signal) {
 
 export async function fetchChreeidSubmissions(sub, { fetcher = fetch, signal } = {}) {
   if (typeof sub !== 'string' || sub.length === 0 || sub.length > 255) {
-    throw new Error('ChreeIDアカウント情報が正しくありません')
+    throw new LocalizedError('submissions.bad_account')
   }
 
   const query = `repo:${repository} is:issue in:comments "${sub}"`
@@ -62,12 +63,12 @@ export async function fetchChreeidSubmissions(sub, { fetcher = fetch, signal } =
     url.searchParams.set('page', String(page))
     const result = await getJson(url, fetcher, signal)
     totalCount = result.total_count
-    if (result.incomplete_results) throw new Error('GitHubの申請検索結果が不完全です。時間をおいて再試行してください。')
+    if (result.incomplete_results) throw new LocalizedError('submissions.incomplete')
     fetchedCount += result.items.length
     issues.push(...result.items.filter((issue) => isSubmissionTitle(issue.title)))
     page += 1
   } while (fetchedCount < totalCount && page <= 10)
-  if (fetchedCount < totalCount) throw new Error('申請が多いため一覧を最後まで検索できませんでした。')
+  if (fetchedCount < totalCount) throw new LocalizedError('submissions.too_many')
 
   const linkedIssues = await Promise.all(issues.map(async (issue) => (
     await linkedCommentExists(issue, sub, fetcher, signal) ? issue : null

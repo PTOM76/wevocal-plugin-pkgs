@@ -1,12 +1,14 @@
 // GitHub Issue Form のプラグイン登録入力を検証する。
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, rmdir, unlink, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rmdir, unlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { parseIssueSubmission } from './issue-submission.mjs'
+import { renderTemplate } from './issue-templates.mjs'
+import { FIELDS, FIELD_LABELS, LANGS, langOfTitle, templateFile } from './submission-i18n.mjs'
 
 const validBody = `### 種別
 wam
@@ -45,6 +47,31 @@ test('converts a valid Issue Form into catalog metadata', () => {
     categories: ['Effect', 'Reverb'],
   })
 })
+
+const values = {
+  type: 'wam',
+  id: 'com.example.reverb',
+  name: 'Example Reverb',
+  author: 'Example Audio',
+  url: 'https://example.com/reverb.js',
+  description: 'A reverb plugin.',
+  website: 'https://example.com',
+  categories: 'Effect, Reverb',
+}
+
+for (const lang of LANGS) {
+  test(`parses an Issue Form written in ${lang}`, () => {
+    const body = FIELDS.map((key) => `### ${FIELD_LABELS[key][lang]}\n${values[key]}\n`).join('\n')
+    assert.equal(parseIssueSubmission(body).id, 'com.example.reverb')
+  })
+
+  test(`keeps the ${lang} Issue Form template in sync`, async () => {
+    const path = fileURLToPath(new URL(`../.github/ISSUE_TEMPLATE/${templateFile(lang)}`, import.meta.url))
+    const actual = (await readFile(path, 'utf8')).replaceAll('\r\n', '\n')
+    assert.equal(actual, renderTemplate(lang))
+    assert.equal(langOfTitle(`${actual.match(/^title: "(.*)"$/m)[1]} Example`), lang)
+  })
+}
 
 test('rejects issues without all submission fields', () => {
   assert.throws(() => parseIssueSubmission(validBody.replace('### 種別\nwam\n\n', '')), /項目が不足/)

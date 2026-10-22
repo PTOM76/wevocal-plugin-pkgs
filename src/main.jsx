@@ -15,6 +15,7 @@ import {
   CssBaseline,
   InputAdornment,
   Link,
+  MenuItem,
   Stack,
   TextField,
   ThemeProvider,
@@ -31,10 +32,12 @@ import {
   logoutChreeidAccount,
 } from './chreeid.js'
 import { fetchChreeidSubmissions } from './chreeidSubmissions.js'
+import { errorText, initLang, setLang, t, useLang } from './i18n.js'
+import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
-const submissionUrl = `${sourceUrl}/issues/new?template=plugin-submission.yml`
+const submissionUrl = (lang) => `${sourceUrl}/issues/new?template=${templateFile(lang)}`
 
 const theme = createTheme({
   palette: {
@@ -93,6 +96,7 @@ function safeUrl(value) {
 }
 
 function PluginCard({ entry }) {
+  useLang()
   const thumbnail = safeUrl(entry.thumbnail)
   const pluginUrl = safeUrl(entry.url)
   const website = safeUrl(entry.website)
@@ -120,7 +124,7 @@ function PluginCard({ entry }) {
           {entry.author}
         </Typography>
         <Typography variant="body2" sx={{ mt: 1.5, whiteSpace: 'pre-line' }}>
-          {entry.description || '説明はありません。'}
+          {entry.description || t('plugin.no_description')}
         </Typography>
         {!!entry.categories.length && (
           <Stack direction="row" spacing={0.75} useFlexGap sx={{ mt: 2, flexWrap: 'wrap' }}>
@@ -133,16 +137,16 @@ function PluginCard({ entry }) {
       <CardActions sx={{ px: 2, pb: 2, pt: 0, flexWrap: 'wrap' }}>
         {pluginUrl && (
           <Button component="a" href={pluginUrl} target="_blank" rel="noopener noreferrer" size="small">
-            配布元
+            {t('plugin.source')}
           </Button>
         )}
         {website && (
           <Button component="a" href={website} target="_blank" rel="noopener noreferrer" size="small">
-            作者サイト
+            {t('plugin.website')}
           </Button>
         )}
         <Button component="a" href={metadataUrl} size="small">
-          JSON
+          {t('plugin.json')}
         </Button>
       </CardActions>
     </Card>
@@ -150,6 +154,7 @@ function PluginCard({ entry }) {
 }
 
 function App() {
+  const lang = useLang()
   const [entries, setEntries] = useState([])
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('loading')
@@ -173,7 +178,7 @@ function App() {
         }
       })
       .catch((reason) => {
-        if (!cancelled) setAccountError(reason instanceof Error ? reason.message : String(reason))
+        if (!cancelled) setAccountError(errorText(reason))
       })
     return () => {
       cancelled = true
@@ -189,14 +194,14 @@ function App() {
       })
       .then((catalog) => {
         if (catalog.version !== 1 || !Array.isArray(catalog.plugins)) {
-          throw new Error('カタログの形式に対応していません')
+          throw new Error(t('catalog.unsupported'))
         }
         setEntries(catalog.plugins)
         setStatus('ready')
       })
       .catch((reason) => {
         if (reason instanceof DOMException && reason.name === 'AbortError') return
-        setError(reason instanceof Error ? reason.message : String(reason))
+        setError(errorText(reason))
         setStatus('error')
       })
     return () => controller.abort()
@@ -218,7 +223,7 @@ function App() {
       })
       .catch((reason) => {
         if (reason instanceof DOMException && reason.name === 'AbortError') return
-        setAccountError(reason instanceof Error ? reason.message : String(reason))
+        setAccountError(errorText(reason))
         setSubmissionsStatus('error')
       })
     return () => controller.abort()
@@ -227,7 +232,7 @@ function App() {
   const login = () => {
     setAccountError('')
     beginChreeidAccountLogin().catch((reason) => {
-      setAccountError(reason instanceof Error ? reason.message : String(reason))
+      setAccountError(errorText(reason))
     })
   }
 
@@ -273,22 +278,31 @@ function App() {
             WeVocal Plugin Packages
           </Typography>
           <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} sx={{ flexShrink: 0 }}>
+            <TextField
+              select
+              value={lang}
+              onChange={(event) => setLang(event.target.value)}
+              sx={{ width: { xs: 104, sm: 128 } }}
+              slotProps={{ htmlInput: { 'aria-label': t('header.language') } }}
+            >
+              {LANGS.map((code) => <MenuItem key={code} value={code}>{LANG_NAMES[code]}</MenuItem>)}
+            </TextField>
             {account ? (
-              <Button onClick={logout} size="small">ログアウト</Button>
+              <Button onClick={logout} size="small">{t('header.logout')}</Button>
             ) : (
-              <Button onClick={login} variant="outlined" size="small" aria-label="ChreeIDでログイン">
-                ログイン
+              <Button onClick={login} variant="outlined" size="small" aria-label={t('header.login_aria')}>
+                {t('header.login')}
               </Button>
             )}
             <Button
               component="a"
-              href={submissionUrl}
+              href={submissionUrl(lang)}
               target="_blank"
               rel="noopener noreferrer"
               variant="contained"
               size="small"
             >
-              登録申請
+              {t('header.submit')}
             </Button>
           </Stack>
           </Toolbar>
@@ -301,16 +315,18 @@ function App() {
         {account && (
           <Box component="section" aria-labelledby="my-submissions-heading" sx={{ mb: 3 }}>
             <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ mb: 0.5 }}>
-              自分の登録申請
+              {t('submissions.title')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-              ChreeID連携済みの公開GitHub申請を表示しています。
+              {t('submissions.note')}
             </Typography>
-            {submissionsStatus === 'loading' && <CircularProgress aria-label="申請を読み込み中" size={24} />}
-            {submissionsStatus === 'error' && <Alert severity="error">登録申請を取得できませんでした。</Alert>}
+            {submissionsStatus === 'loading' && <CircularProgress aria-label={t('submissions.loading')} size={24} />}
+            {submissionsStatus === 'error' && <Alert severity="error">{t('submissions.failed')}</Alert>}
             {submissionsStatus === 'ready' && submissions.length === 0 && (
               <Alert severity="info">
-                連携済みの申請はありません。申請Issueで <code>/link-chreeid</code> を実行すると一覧に表示されます。
+                {t('submissions.empty').split('{command}').flatMap((part, index) => (
+                  index === 0 ? [part] : [<code key={index}>/link-chreeid</code>, part]
+                ))}
               </Alert>
             )}
             {submissionsStatus === 'ready' && submissions.length > 0 && (
@@ -322,15 +338,15 @@ function App() {
                         <Typography component="h3" variant="subtitle1" sx={{ flexGrow: 1 }}>
                           {submission.title} #{submission.number}
                         </Typography>
-                        <Chip size="small" label={submission.state === 'open' ? '受付中・審査中' : 'クローズ'} />
+                        <Chip size="small" label={submission.state === 'open' ? t('submissions.open') : t('submissions.closed')} />
                       </Stack>
                       <Typography variant="body2" color="text.secondary">
-                        {new Intl.DateTimeFormat('ja-JP', { dateStyle: 'medium' }).format(new Date(submission.createdAt))}
+                        {new Intl.DateTimeFormat(lang.replace('_', '-'), { dateStyle: 'medium' }).format(new Date(submission.createdAt))}
                       </Typography>
                     </CardContent>
                     <CardActions sx={{ px: 2, pt: 0 }}>
                       <Button component="a" href={submission.url} target="_blank" rel="noopener noreferrer" size="small">
-                        GitHubで見る
+                        {t('submissions.view')}
                       </Button>
                     </CardActions>
                   </Card>
@@ -343,10 +359,10 @@ function App() {
           fullWidth
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="名前、作者、カテゴリで検索"
+          placeholder={t('catalog.search_placeholder')}
           sx={{ mb: 2 }}
           slotProps={{
-            htmlInput: { 'aria-label': 'プラグインを検索' },
+            htmlInput: { 'aria-label': t('catalog.search_aria') },
             input: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -370,24 +386,24 @@ function App() {
           }}
         >
           <Typography role="status" color="text.secondary">
-            {status === 'loading' && 'カタログを読み込んでいます…'}
-            {status === 'ready' && `${entries.length} 件中 ${filtered.length} 件を表示`}
-            {status === 'error' && 'カタログを読み込めませんでした'}
+            {status === 'loading' && t('catalog.loading')}
+            {status === 'ready' && t('catalog.count', { total: entries.length, shown: filtered.length })}
+            {status === 'error' && t('catalog.failed')}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
             <Button component="a" href={`${import.meta.env.BASE_URL}data/index.json`} size="small">
-              カタログ JSON
+              {t('catalog.json')}
             </Button>
             <Button component="a" href={`${import.meta.env.BASE_URL}data/wam.json`} size="small">
-              WAM のみの JSON
+              {t('catalog.json_wam')}
             </Button>
           </Stack>
         </Stack>
 
-        {status === 'loading' && <CircularProgress aria-label="読み込み中" />}
+        {status === 'loading' && <CircularProgress aria-label={t('catalog.loading_aria')} />}
         {status === 'error' && <Alert severity="error">{error}</Alert>}
         {status === 'ready' && filtered.length === 0 && (
-          <Alert severity="info">一致するプラグインはありません。</Alert>
+          <Alert severity="info">{t('catalog.empty')}</Alert>
         )}
         {status === 'ready' && filtered.length > 0 && (
           <Box
@@ -415,8 +431,9 @@ function App() {
   )
 }
 
+initLang()
 const rootElement = document.getElementById('root')
-if (!rootElement) throw new Error('アプリの表示先がありません')
+if (!rootElement) throw new Error(t('app.root_missing'))
 const root = import.meta.hot?.data.root ?? createRoot(rootElement)
 if (import.meta.hot) import.meta.hot.data.root = root
 

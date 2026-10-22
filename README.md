@@ -26,6 +26,11 @@ ChreeIDでログインすると、GitHub Issue上で同じChreeIDアカウント
 
 投稿受付には Issues を有効にし、リポジトリ設定で GitHub Actions によるプルリクエスト作成を許可する必要がある。
 
+## 多言語対応
+ウェブサイトは日本語、英語、韓国語、簡体字中国語、繁体字中国語に対応する。言語は URL の `?lang=`、ヘッダーで選んだ言語、ブラウザーの言語の順に決まる。訳文は `src/i18n/*.json` に置く。
+
+掲載申請の Issue Form は言語ごとにテンプレートを用意し、サイトの「登録申請」は表示中の言語のテンプレートを開く。テンプレートは `scripts/submission-i18n.mjs` の文言から `node scripts/issue-templates.mjs` で生成する（`npm test` が最新かを確認する）。Issue のタイトルの接頭辞で言語を判別し、Actions の返信もその言語で投稿する。言語を足すときは `scripts/submission-i18n.mjs` と `src/i18n/` に追加する。
+
 ## 任意のChreeID連携
 掲載申請を作成したIssueに投稿者本人が `/link-chreeid` とコメントすると、Issue専用のnonce付きログインリンクが返信される。ChreeIDで認証後に暗号化証明を同じIssueへコメントすると、GitHub ActionsがChreeIDの署名、宛先、nonce、有効期限とGitHub投稿者を検証する。IDトークンは公開Issueに載せず、成功時には明示的に同意したChreeID `sub` を公開コメントに記録する。ChreeID連携は任意で、Issue投稿やプラグイン審査の条件ではない。
 

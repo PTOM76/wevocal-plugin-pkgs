@@ -7,8 +7,10 @@ import {
   encryptChreeidProof,
   isChreeidAccountCallback,
 } from './chreeid.js'
+import { errorText, t, useLang } from './i18n.js'
 
 const ChreeidLinkPanel = () => {
+  useLang()
   const [request, setRequest] = useState(null)
   const [proof, setProof] = useState('')
   const [error, setError] = useState('')
@@ -36,7 +38,7 @@ const ChreeidLinkPanel = () => {
         }
       })
       .catch((reason) => {
-        if (!cancelled) setError(reason instanceof Error ? reason.message : String(reason))
+        if (!cancelled) setError(errorText(reason))
       })
     return () => {
       cancelled = true
@@ -52,27 +54,27 @@ const ChreeidLinkPanel = () => {
       setCopied(true)
       setError('')
     } catch (reason) {
-      setError(reason instanceof Error ? `コピーできませんでした: ${reason.message}` : String(reason))
+      setError(t('link.copy_failed', { message: errorText(reason) }))
     }
   }
 
   return (
     <Alert severity={proof ? 'success' : 'info'} sx={{ mb: 2 }}>
       <Stack spacing={1.5} sx={{ width: '100%' }}>
-        <Typography variant="subtitle2">Issue #{request.issue} のChreeID連携</Typography>
+        <Typography variant="subtitle2">{t('link.title', { issue: request.issue })}</Typography>
         {!proof && (
           <>
             <Typography variant="body2">
-              ChreeIDで認証し、発行された暗号化証明を元のGitHub Issueへコメントします。IDトークンはIssueに公開されません。
+              {t('link.intro')}
             </Typography>
             <Box>
               <Button
                 variant="contained"
                 onClick={() => beginChreeidLogin(request.issue, request.nonce).catch((reason) => {
-                  setError(reason instanceof Error ? reason.message : String(reason))
+                  setError(errorText(reason))
                 })}
               >
-                ChreeIDで認証
+                {t('link.authenticate')}
               </Button>
             </Box>
           </>
@@ -80,12 +82,12 @@ const ChreeidLinkPanel = () => {
         {proof && (
           <>
             <Typography variant="body2">
-              このコマンドを Issue #{request.issue} にコメントすると、ActionsがGitHub投稿者との一致を検証します。
+              {t('link.comment', { issue: request.issue })}
             </Typography>
             <TextField value={proof} multiline minRows={2} slotProps={{ htmlInput: { readOnly: true } }} />
             <Box>
               <Button variant="contained" onClick={copyProof}>
-                {copied ? 'コピーしました' : 'コマンドをコピー'}
+                {copied ? t('link.copied') : t('link.copy')}
               </Button>
             </Box>
           </>

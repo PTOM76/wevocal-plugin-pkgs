@@ -32,7 +32,7 @@ function callbackUrl() {
 
 function requireClientId() {
   const clientId = import.meta.env.VITE_CHREEID_CLIENT_ID
-  if (!clientId) throw new Error('ChreeIDのクライアントIDが設定されていません')
+  if (!clientId) throw new LocalizedError('chreeid.no_client_id')
   return clientId
 }
 
@@ -55,7 +55,7 @@ async function createAuthorizationUrl({ state, verifier, nonce }) {
 export async function beginChreeidLogin(issue, nonce) {
   requireClientId()
   if (!/^[1-9]\d{0,9}$/.test(issue) || !/^[A-Za-z0-9_-]{43}$/.test(nonce)) {
-    throw new Error('Issue用の認証リンクが正しくありません')
+    throw new LocalizedError('chreeid.bad_issue_link')
   }
 
   const state = randomBase64Url(32)
@@ -86,16 +86,16 @@ async function exchangeChreeidCode(search, expectedKind) {
   const params = new URLSearchParams(search)
   const state = params.get('state')
   const code = params.get('code')
-  if (!state) throw new Error('ChreeIDからの認証応答にstateがありません')
+  if (!state) throw new LocalizedError('chreeid.no_state')
 
   const storageKey = `${sessionPrefix}${state}`
   const saved = sessionStorage.getItem(storageKey)
   sessionStorage.removeItem(storageKey)
-  if (!saved) throw new Error('認証状態が見つからないか、すでに使用されています')
+  if (!saved) throw new LocalizedError('chreeid.state_missing')
   const pending = JSON.parse(saved)
-  if (pending.kind !== expectedKind) throw new Error('ChreeID認証の用途が一致しません')
-  if (params.has('error')) throw new Error(`ChreeID認証に失敗しました: ${params.get('error_description') || params.get('error')}`)
-  if (!code) throw new Error('ChreeIDから認可コードが返されませんでした')
+  if (pending.kind !== expectedKind) throw new LocalizedError('chreeid.kind_mismatch')
+  if (params.has('error')) throw new LocalizedError('chreeid.auth_failed', { reason: params.get('error_description') || params.get('error') })
+  if (!code) throw new LocalizedError('chreeid.no_code')
   const clientId = requireClientId()
 
   const response = await fetch(`${issuer}/oauth/token`, {
@@ -111,9 +111,9 @@ async function exchangeChreeidCode(search, expectedKind) {
     }),
   })
   const tokens = await response.json()
-  if (!response.ok) throw new Error(tokens.error_description || `ChreeIDのトークン交換に失敗しました（HTTP ${response.status}）`)
+  if (!response.ok) throw (tokens.error_description ? new Error(tokens.error_description) : new LocalizedError('chreeid.token_failed', { status: response.status }))
   if (typeof tokens.id_token !== 'string' || tokens.id_token.length > 8192) {
-    throw new Error('ChreeIDから有効なIDトークンが返されませんでした')
+    throw new LocalizedError('chreeid.no_id_token')
   }
 
   return { pending, idToken: tokens.id_token, clientId }
@@ -121,15 +121,15 @@ async function exchangeChreeidCode(search, expectedKind) {
 
 async function verifyChreeidIdToken(idToken, { clientId, nonce }) {
   const parts = idToken.split('.')
-  if (parts.length !== 3) throw new Error('ChreeID IDトークンの形式が不正です')
+  if (parts.length !== 3) throw new LocalizedError('chreeid.bad_token_format')
   const header = JSON.parse(new TextDecoder().decode(fromBase64Url(parts[0])))
   const claims = JSON.parse(new TextDecoder().decode(fromBase64Url(parts[1])))
   if (!header || header.alg !== 'RS256' || typeof header.kid !== 'string') {
-    throw new Error('ChreeID IDトークンの署名方式が不正です')
+    throw new LocalizedError('chreeid.bad_token_alg')
   }
 
   const response = await fetch(`${issuer}/oauth/jwks`, { credentials: 'omit' })
-  if (!response.ok) throw new Error(`ChreeID署名鍵を取得できません（HTTP ${response.status}）`)
+  if (!response.ok) throw new LocalizedError('chreeid.jwks_failed', { status: response.status })
   const jwks = await response.json()
   const jwk = jwks.keys?.find((key) =>
     key.kid === header.kid
@@ -138,7 +138,7 @@ async function verifyChreeidIdToken(idToken, { clientId, nonce }) {
     && (key.use === undefined || key.use === 'sig')
     && (key.key_ops === undefined || key.key_ops.includes('verify')),
   )
-  if (!jwk) throw new Error('ChreeID署名鍵が見つかりません')
+  if (!jwk) throw new LocalizedError('chreeid.jwk_missing')
 
   const verificationKey = await crypto.subtle.importKey(
     'jwk',
@@ -153,7 +153,7 @@ async function verifyChreeidIdToken(idToken, { clientId, nonce }) {
     fromBase64Url(parts[2]),
     new TextEncoder().encode(`${parts[0]}.${parts[1]}`),
   )
-  if (!verified) throw new Error('ChreeID IDトークンの署名が正しくありません')
+  if (!verified) throw new LocalizedError('chreeid.bad_signature')
 
   const audience = Array.isArray(claims.aud) ? claims.aud : [claims.aud]
   const now = Math.floor(Date.now() / 1000)
@@ -173,7 +173,7 @@ async function verifyChreeidIdToken(idToken, { clientId, nonce }) {
     || claims.exp <= claims.iat
     || claims.exp - claims.iat > 3600
   ) {
-    throw new Error('ChreeID IDトークンの発行者、宛先、nonce、期限、subのいずれかが不正です')
+    throw new LocalizedError('chreeid.bad_claims')
   }
   return claims.sub
 }
@@ -209,7 +209,7 @@ export function logoutChreeidAccount() {
 
 export async function encryptChreeidProof(idToken) {
   const publicKey = import.meta.env.VITE_CHREEID_LINK_PUBLIC_KEY
-  if (!publicKey) throw new Error('ChreeID連携用の公開鍵が設定されていません')
+  if (!publicKey) throw new LocalizedError('chreeid.no_public_key')
 
   const recipientKey = await crypto.subtle.importKey(
     'spki',

@@ -21,7 +21,15 @@ import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
 
 const base = import.meta.env.BASE_URL
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
-export const submissionUrl = (lang) => `${sourceUrl}/issues/new?template=${templateFile(lang)}`
+// prefill は、Issue Form の項目（type、id、name など）の初期値
+export const submissionUrl = (lang, prefill = {}) => {
+  const url = new URL(`${sourceUrl}/issues/new`)
+  url.searchParams.set('template', templateFile(lang))
+  for (const [key, value] of Object.entries(prefill)) {
+    if (value) url.searchParams.set(key, value)
+  }
+  return url.href
+}
 
 export const catalogPath = base
 export const mypagePath = `${base}mypage/`

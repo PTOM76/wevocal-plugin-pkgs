@@ -77,6 +77,7 @@ export async function fetchChreeidSubmissions(sub, { fetcher = fetch, signal } =
     .filter(Boolean)
     .map((issue) => ({
       number: issue.number,
+      login: issue.user?.login ?? '',
       title: issue.title,
       state: issue.state,
       createdAt: issue.created_at,

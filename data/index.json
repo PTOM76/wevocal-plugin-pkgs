@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-22T05:04:36.077Z",
+  "updatedAt": "2026-10-22T05:12:02.554Z",
   "plugins": [
     {
       "id": "com.sequencerparty.audioinput",
@@ -1519,7 +1519,8 @@
         "random",
         "filter"
       ],
-      "installable": true
+      "installable": true,
+      "submitter": "PTOM76"
     }
   ]
 }

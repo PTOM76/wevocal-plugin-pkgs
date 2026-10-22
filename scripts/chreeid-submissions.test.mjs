@@ -20,6 +20,7 @@ test('lists only registration Issues with a verified ChreeID link by the Actions
         items: [
           {
             number: 12,
+            user: { login: 'PTOM76' },
             title: '[プラグイン登録] Example',
             state: 'open',
             created_at: '2026-10-19T00:00:00Z',
@@ -50,6 +51,7 @@ test('lists only registration Issues with a verified ChreeID link by the Actions
 
   assert.deepEqual(await fetchChreeidSubmissions(sub, { fetcher }), [{
     number: 12,
+    login: 'PTOM76',
     title: '[プラグイン登録] Example',
     state: 'open',
     createdAt: '2026-10-19T00:00:00Z',

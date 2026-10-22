@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Alert, Box, Button, Card, CardActions, CardContent, Chip, CircularProgress, Stack, Typography } from '@mui/material'
 import { submissionUrl } from './AppShell.jsx'
 import { isAbort } from './abort.js'
+import MyPlugins from './MyPlugins.jsx'
 import { fetchChreeidSubmissions } from './chreeidSubmissions.js'
 import { errorText, t, useLang } from './i18n.js'
 
@@ -28,7 +29,12 @@ export default function SubmissionsList({ account }) {
     return () => controller.abort()
   }, [account])
 
+  // 連携済みの申請を出した GitHub アカウント。この人たちが登録したプラグインを「自分のプラグイン」に出す
+  const logins = new Set(submissions.map((submission) => submission.login.toLowerCase()).filter(Boolean))
+
   return (
+    <>
+    {status === 'ready' && <MyPlugins logins={logins} />}
     <Box component="section" aria-labelledby="my-submissions-heading">
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
         <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ flexGrow: 1 }}>
@@ -75,5 +81,6 @@ export default function SubmissionsList({ account }) {
         </Stack>
       )}
     </Box>
+    </>
   )
 }

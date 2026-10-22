@@ -157,7 +157,7 @@ async function addEntry(input) {
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error
   }
-  await writeEntry(entry)
+  await writeEntry(entry.version ? entry : await withRemoteVersion(entry))
   console.log(`登録しました: ${entry.id}`)
 }
 
@@ -220,7 +220,26 @@ async function updateEntry(id, pairs) {
     if (value === '') continue
     changes[key] = key === 'categories' ? value.split(',').map((item) => item.trim()).filter(Boolean) : value
   }
-  await writeEntry({ ...current, ...changes })
+  const next = { ...current, ...changes }
+  // 版を指定していなければ、配布元の版を取り直す
+  await writeEntry('version' in changes ? next : await withRemoteVersion(next))
+}
+
+// 配布元の版を取り直す。ID を渡さないときは、公式の WAM コミュニティから取り込んだもの（同期で更新される）以外のすべて
+async function refreshVersions(id) {
+  const files = id ? [`${fileId(id)}.json`] : (await readdir(pluginsDir)).filter((name) => name.endsWith('.json'))
+  let changed = 0
+  for (const name of files) {
+    const current = await readEntry(name.slice(0, -5))
+    if (!current) throw new Error(`登録されていないプラグイン ID です: ${id}`)
+    if (!id && current.source?.catalog === sourceUrl) continue
+    const next = await withRemoteVersion(current)
+    if (next.version === current.version) continue
+    await writeEntry(next)
+    console.log(`${current.id}: ${current.version ?? '（なし）'} -> ${next.version}`)
+    changed += 1
+  }
+  console.log(`版を更新したもの: ${changed} 件`)
 }
 
 // 投稿者本人による取り下げ。登録した投稿者と同じ GitHub ユーザーのときだけ消す
@@ -300,6 +319,9 @@ if (command === 'sync-wam') {
   await updateEntry(id, pairs)
   await buildIndex()
   console.log(`更新しました: ${id}`)
+} else if (command === 'refresh-versions') {
+  await refreshVersions(args[0])
+  await buildIndex()
 } else if (command === 'remove') {
   const [id] = args
   if (!id) throw new Error('使い方: node scripts/catalog.mjs remove <ID>')
@@ -315,5 +337,5 @@ if (command === 'sync-wam') {
 } else if (command === 'validate') {
   await buildIndex()
 } else {
-  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|submit-json|update|remove|withdraw|validate>')
+  throw new Error('使い方: node scripts/catalog.mjs <sync-wam|add|add-json|submit-json|update|remove|withdraw|refresh-versions|validate>')
 }

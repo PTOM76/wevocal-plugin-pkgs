@@ -12,10 +12,11 @@ on:
           - 登録
           - 更新
           - 削除
+          - 版を再確認
         default: WAMカタログを同期
         required: true
       id:
-        description: 登録、更新、削除するプラグインの固定 ID
+        description: 登録、更新、削除するプラグインの固定 ID（版を再確認では、空にすると全部）
         type: string
         required: false
       type:
@@ -101,6 +102,11 @@ jobs:
         # 空の項目は変えない。種類は選択式で空にできないので、更新では変えない（変えるときは削除して登録し直す）
         run: |
           node scripts/catalog.mjs update "$PLUGIN_ID" "name=$PLUGIN_NAME" "author=$PLUGIN_AUTHOR" "url=$PLUGIN_URL" "description=$PLUGIN_DESCRIPTION" "website=$PLUGIN_WEBSITE" "categories=$PLUGIN_CATEGORIES" "submitter=$PLUGIN_SUBMITTER"
+      - name: 配布元の版を取り直す
+        if: inputs.operation == '版を再確認'
+        env:
+          PLUGIN_ID: ${{ inputs.id }}
+        run: node scripts/catalog.mjs refresh-versions "$PLUGIN_ID"
       - name: プラグインを削除
         if: inputs.operation == '削除'
         env:

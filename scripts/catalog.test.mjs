@@ -157,3 +157,19 @@ test('ownership is checked against the registered URL, not the submitted one', a
     assert.notEqual(result.status, 0)
   })
 })
+
+test('maintainers can refresh versions from the distributor', async () => {
+  await withCatalog(async ({ catalog, read, remote }) => {
+    catalog('add', 'wam', submission.id, submission.name, submission.author, submission.url)
+    assert.equal((await read()).version, undefined)
+    remote[descriptorUrl] = { version: '3.1.4' }
+    assert.equal(catalog('refresh-versions').status, 0)
+    assert.equal((await read()).version, '3.1.4')
+    remote[descriptorUrl] = { version: '3.1.5' }
+    assert.equal(catalog('refresh-versions', submission.id).status, 0)
+    assert.equal((await read()).version, '3.1.5')
+    // 版を指定した更新は、配布元の版で上書きしない
+    assert.equal(catalog('update', submission.id, 'version=9.9.9').status, 0)
+    assert.equal((await read()).version, '9.9.9')
+  })
+})

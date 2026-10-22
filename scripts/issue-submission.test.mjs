@@ -88,10 +88,8 @@ test('accepts a form where only the distribution link is filled in', () => {
 })
 
 test('treats an unselected type dropdown ("None") as empty', () => {
-  const body = FIELDS.map((key) => `### ${FIELD_LABELS[key].ja}
-${key === 'url' ? 'https://example.com/reverb.dll' : key === 'type' ? 'None' : '_No response_'}
-`).join('
-')
+  const value = (key) => (key === 'url' ? 'https://example.com/reverb.dll' : key === 'type' ? 'None' : '_No response_')
+  const body = FIELDS.map((key) => ['### ' + FIELD_LABELS[key].ja, value(key), '']).flat().join(String.fromCharCode(10))
   assert.equal(parseIssueSubmission(body).type, 'vst')
 })
 

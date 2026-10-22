@@ -16,7 +16,7 @@ import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
 
 const base = import.meta.env.BASE_URL
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
-const submissionUrl = (lang) => `${sourceUrl}/issues/new?template=${templateFile(lang)}`
+export const submissionUrl = (lang) => `${sourceUrl}/issues/new?template=${templateFile(lang)}`
 
 export const catalogPath = base
 export const mypagePath = `${base}mypage/`
@@ -64,28 +64,28 @@ export default function AppShell({ page, account, onLogin, onLogout, children })
               >
                 {LANGS.map((code) => <MenuItem key={code} value={code}>{LANG_NAMES[code]}</MenuItem>)}
               </TextField>
-              {account && (
-                <Button component="a" href={onMypage ? catalogPath : mypagePath} size="small">
-                  {onMypage ? t('nav.catalog') : t('nav.mypage')}
-                </Button>
-              )}
               {account ? (
-                <Button onClick={onLogout} size="small">{t('header.logout')}</Button>
+                <>
+                  <Button
+                    component="a"
+                    href={onMypage ? catalogPath : mypagePath}
+                    variant="contained"
+                    size="small"
+                  >
+                    {onMypage ? t('nav.catalog') : t('nav.mypage')}
+                  </Button>
+                  <Button onClick={onLogout} size="small">{t('header.logout')}</Button>
+                </>
               ) : (
-                <Button onClick={onLogin} variant="outlined" size="small" aria-label={t('header.login_aria')}>
-                  {t('header.login')}
-                </Button>
+                <>
+                  <Button onClick={onLogin} variant="outlined" size="small" aria-label={t('header.login_aria')}>
+                    {t('header.login')}
+                  </Button>
+                  <Button component="a" href={submissionUrl(lang)} target="_blank" rel="noopener noreferrer" variant="contained" size="small">
+                    {t('header.submit')}
+                  </Button>
+                </>
               )}
-              <Button
-                component="a"
-                href={submissionUrl(lang)}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="contained"
-                size="small"
-              >
-                {t('header.submit')}
-              </Button>
             </Stack>
           </Toolbar>
         </Container>

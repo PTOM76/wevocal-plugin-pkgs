@@ -12,7 +12,7 @@ export const theme = createTheme({
     background: { default: '#f9fafb', paper: '#ffffff' },
     divider: '#e5e7eb',
   },
-  shape: { borderRadius: 6 },
+  shape: { borderRadius: 2 },
   typography: {
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif',
     button: { textTransform: 'none', fontWeight: 600 },
@@ -27,7 +27,7 @@ export const theme = createTheme({
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { transition: 'background-color 0.2s, border-color 0.2s, color 0.2s' },
+        root: { borderRadius: 6, transition: 'background-color 0.2s, border-color 0.2s, color 0.2s' },
         sizeSmall: { height: 32, padding: '0 12px', fontSize: '0.8125rem' },
         sizeMedium: { height: 40, padding: '0 16px', fontSize: '0.875rem' },
         outlined: { borderColor: '#d1d5db' },
@@ -37,6 +37,7 @@ export const theme = createTheme({
       defaultProps: { elevation: 0 },
       styleOverrides: { root: { backgroundImage: 'none' } },
     },
+    MuiOutlinedInput: { styleOverrides: { root: { borderRadius: 6 } } },
     MuiTextField: { defaultProps: { size: 'small', fullWidth: true } },
     MuiChip: {
       styleOverrides: {

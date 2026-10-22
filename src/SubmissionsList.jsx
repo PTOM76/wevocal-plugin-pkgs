@@ -1,6 +1,7 @@
 // ログイン中の ChreeID に連携済みの登録申請の一覧（マイページ）。
 import { useEffect, useState } from 'react'
 import { Alert, Box, Button, Card, CardActions, CardContent, Chip, CircularProgress, Stack, Typography } from '@mui/material'
+import { submissionUrl } from './AppShell.jsx'
 import { isAbort } from './abort.js'
 import { fetchChreeidSubmissions } from './chreeidSubmissions.js'
 import { errorText, t, useLang } from './i18n.js'
@@ -29,9 +30,14 @@ export default function SubmissionsList({ account }) {
 
   return (
     <Box component="section" aria-labelledby="my-submissions-heading">
-      <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ mb: 0.5 }}>
-        {t('submissions.title')}
-      </Typography>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+        <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ flexGrow: 1 }}>
+          {t('submissions.title')}
+        </Typography>
+        <Button component="a" href={submissionUrl(lang)} target="_blank" rel="noopener noreferrer" variant="contained" size="small">
+          {t('header.submit')}
+        </Button>
+      </Stack>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
         {t('submissions.note')}
       </Typography>

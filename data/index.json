@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-22T04:50:17.215Z",
+  "updatedAt": "2026-10-22T04:53:59.575Z",
   "plugins": [
     {
       "id": "com.sequencerparty.audioinput",
@@ -1504,8 +1504,8 @@
       "version": "1.0.0",
       "description": "Three formant-like peaks that slowly and randomly wander over time, so a voice keeps changing its vowel color.",
       "type": "wam",
-      "url": "https://ptom76.github.io/wevocal-wam-formantdrift/index.js",
-      "website": "https://github.com/PTOM76/wevocal-wam-formantdrift",
+      "url": "https://ptom76.github.io/wam-formantdrift/index.js",
+      "website": "https://github.com/PTOM76/wam-formantdrift",
       "thumbnail": "",
       "categories": [
         "Effect",

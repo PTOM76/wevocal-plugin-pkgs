@@ -1,6 +1,7 @@
 // ログイン中の ChreeID に連携済みの登録申請の一覧（マイページ）。
 import { useEffect, useState } from 'react'
 import { Alert, Box, Button, Card, CardActions, CardContent, Chip, CircularProgress, Stack, Typography } from '@mui/material'
+import { isAbort } from './abort.js'
 import { fetchChreeidSubmissions } from './chreeidSubmissions.js'
 import { errorText, t, useLang } from './i18n.js'
 
@@ -19,7 +20,7 @@ export default function SubmissionsList({ account }) {
         setStatus('ready')
       })
       .catch((reason) => {
-        if (reason instanceof DOMException && reason.name === 'AbortError') return
+        if (isAbort(reason)) return
         setError(errorText(reason))
         setStatus('error')
       })

@@ -37,6 +37,7 @@ import { LANGS, LANG_NAMES, templateFile } from '../scripts/submission-i18n.mjs'
 
 const catalogUrl = `${import.meta.env.BASE_URL}data/index.json`
 const sourceUrl = 'https://github.com/PTOM76/wevocal-plugin-pkgs'
+const submissionsHash = '#/submissions'
 const submissionUrl = (lang) => `${sourceUrl}/issues/new?template=${templateFile(lang)}`
 
 const theme = createTheme({
@@ -163,6 +164,17 @@ function App() {
   const [accountError, setAccountError] = useState('')
   const [submissions, setSubmissions] = useState([])
   const [submissionsStatus, setSubmissionsStatus] = useState('idle')
+  const [hash, setHash] = useState(window.location.hash)
+  const showSubmissions = !!account && hash === submissionsHash
+
+  useEffect(() => {
+    const onHashChange = () => {
+      setHash(window.location.hash)
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
   useEffect(() => {
     const callbackSearch = window.location.search
@@ -275,7 +287,7 @@ function App() {
             noWrap
             sx={{ fontWeight: 700, flexGrow: 1, minWidth: 0, fontSize: { xs: '0.9rem', sm: '1.25rem' } }}
           >
-            WeVocal Plugin Packages
+            <Link href="#/" color="inherit" underline="none">WeVocal Plugin Packages</Link>
           </Typography>
           <Stack direction="row" spacing={{ xs: 0.5, sm: 1 }} sx={{ flexShrink: 0 }}>
             <TextField
@@ -291,6 +303,11 @@ function App() {
             >
               {LANGS.map((code) => <MenuItem key={code} value={code}>{LANG_NAMES[code]}</MenuItem>)}
             </TextField>
+            {account && (
+              <Button component="a" href={showSubmissions ? '#/' : submissionsHash} size="small">
+                {showSubmissions ? t('nav.catalog') : t('submissions.title')}
+              </Button>
+            )}
             {account ? (
               <Button onClick={logout} size="small">{t('header.logout')}</Button>
             ) : (
@@ -316,7 +333,7 @@ function App() {
       <Container component="main" maxWidth="md" sx={{ flexGrow: 1, pt: 3, pb: 8 }}>
         <ChreeidLinkPanel />
         {accountError && <Alert severity="error" sx={{ mb: 2 }}>{accountError}</Alert>}
-        {account && (
+        {showSubmissions && (
           <Box component="section" aria-labelledby="my-submissions-heading" sx={{ mb: 3 }}>
             <Typography id="my-submissions-heading" component="h2" variant="h5" sx={{ mb: 0.5 }}>
               {t('submissions.title')}
@@ -359,6 +376,8 @@ function App() {
             )}
           </Box>
         )}
+        {!showSubmissions && (
+          <>
         <TextField
           fullWidth
           value={query}
@@ -419,6 +438,8 @@ function App() {
           >
             {filtered.map((entry) => <PluginCard key={entry.id} entry={entry} />)}
           </Box>
+        )}
+          </>
         )}
       </Container>
 
